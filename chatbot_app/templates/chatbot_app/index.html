@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impy - Imperial College London Chatbot</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'chatbot_app/style.css' %}">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>Impy</h1>
+            <p>Your Imperial College London Chatbot</p>
+        </div>
+        <div class="chat-box" id="chat-box"></div>
+        <div class="chat-input">
+            <textarea id="user-input" placeholder="Type your message here..."></textarea>
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+    <script src="{% static 'chatbot_app/chat.js' %}"></script>
+</body>
+</html>
