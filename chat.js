@@ -37,9 +37,7 @@ function sendMessage() {
         chatBox.innerHTML += `<div class="bot-response">${data.response}</div>`;
         chatBox.scrollTop = chatBox.scrollHeight;
     })
-    .catch(error => {
-        console.error('Error:', error);
-        chatBox.innerHTML += `<div class="bot-response">Error: ${error.message}</div>`;
-        chatBox.scrollTop = chatBox.scrollHeight;
-    });
+    .catch(error => console.error('Error:', error));
 }
+
+document.getElementById('send-button').addEventListener('click', sendMessage);
