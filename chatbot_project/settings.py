@@ -82,11 +82,11 @@ WSGI_APPLICATION = 'chatbot_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('postgresql_chatbot'),            # The name of your database
-        'USER': config('postgresql_chatbot_ro0n_user'),         # The user you created
-        'PASSWORD': config('0lgpMQQ1WmJtsfkm8GPkNIyx7RMVOaS4'), # The password you set
-        'HOST': config('dpg-cq9e642ju9rs73b4llhg-a'),          # Typically 'localhost'
-        'PORT': config('5432'),               # The default PostgreSQL port
+        'NAME': config('DB_NAME'),          # This reads the DB_NAME environment variable
+        'USER': config('DB_USER'),          # This reads the DB_USER environment variable
+        'PASSWORD': config('DB_PASSWORD'),  # This reads the DB_PASSWORD environment variable
+        'HOST': config('DB_HOST'),          # This reads the DB_HOST environment variable
+        'PORT': config('DB_PORT', default='5432'),  # This reads the DB_PORT environment variable, defaulting to 5432
     }
 }
 
