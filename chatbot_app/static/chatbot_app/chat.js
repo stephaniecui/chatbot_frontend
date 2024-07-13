@@ -22,15 +22,12 @@ function sendMessage() {
     chatBox.innerHTML += `<div class="user-message">${userInput}</div>`;
     document.getElementById('user-input').value = '';
 
-    const csrftoken = getCookie('csrftoken');
-
-    fetch('/chatbot/chat/', {
+    fetch('https://chatbot-frontend-po7w.onrender.com', { // Make sure this URL is correct
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': csrftoken
+            'Content-Type': 'application/json', // Ensure the content type is correct
         },
-        body: `message=${encodeURIComponent(userInput)}`
+        body: JSON.stringify({ message: userInput }) // Send data as JSON
     })
     .then(response => response.json())
     .then(data => {
