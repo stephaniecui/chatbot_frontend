@@ -39,6 +39,7 @@ function sendMessage() {
     })
     .catch(error => {
         console.error('Error:', error);
-        chatBox.innerHTML += `<div class="bot-response">There was an error processing your request.</div>`;
+        chatBox.innerHTML += `<div class="bot-response">Error: ${error.message}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
     });
 }
