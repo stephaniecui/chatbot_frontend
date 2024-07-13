@@ -27,7 +27,12 @@ SECRET_KEY = 'django-insecure-3!5nf1dg)yo$zfnw&k6l!t4t@z#n$=itc@4sx%qn@potb@*=)s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'chatbot-frontend-po7w.onrender.com',  # Add your Render app's hostname here
+]
+
 
 # Application definition
 
