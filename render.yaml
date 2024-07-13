@@ -8,6 +8,16 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.4  # Specify the full version here
+      - key: DJANGO_SETTINGS_MODULE
+        value: chatbot_project.settings
+      - key: DB_NAME
+        value: postgresql_chatbot
+      - key: DB_USER
+        value: postgresql_chatbot_ro0n_user
+      - key: DB_PASSWORD
+        value: 0lgpMQQ1WmJtsfkm8GPkNIyx7RMVOaS4
+      - key: DB_HOST
+        value: dpg-cq9e642ju9rs73b4llhg-a
     routes:
       - type: static
         name: Static Files
