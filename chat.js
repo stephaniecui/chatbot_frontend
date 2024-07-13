@@ -22,7 +22,7 @@ function sendMessage() {
     chatBox.innerHTML += `<div class="user-message">${userInput}</div>`;
     document.getElementById('user-input').value = '';
 
-    fetch('https://chatbot-frontend-po7w.onrender.com', { // Make sure this URL is correct
+    fetch('https://chatbot-frontend-po7w.onrender.com/chatbot/chat/', { // Make sure this URL is correct
         method: 'POST',
         headers: {
             'Content-Type': 'application/json', // Ensure the content type is correct
