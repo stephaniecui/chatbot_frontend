@@ -26,6 +26,7 @@ function sendMessage() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json', // Ensure the content type is correct
+            'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token if necessary
         },
         body: JSON.stringify({ message: userInput }) // Send data as JSON
     })
@@ -37,4 +38,13 @@ function sendMessage() {
     .catch(error => console.error('Error:', error));
 }
 
+// Ensure the send button event listener is properly set
 document.getElementById('send-button').addEventListener('click', sendMessage);
+
+// Optionally handle "Enter" key press for better user experience
+document.getElementById('user-input').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        sendMessage();
+        e.preventDefault(); // Prevent newline in the textarea
+    }
+});
