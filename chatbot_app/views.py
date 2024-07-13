@@ -11,17 +11,17 @@ def index(request):
 @csrf_exempt
 def chatbot_response(request):
     if request.method == 'POST':
-        user_message = request.POST.get('message')
-        if user_message:
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            user_message = data.get('message', '')
             print(f"DEBUG: Received message: {user_message}")
             bot_response = get_claude_response(user_message)
             ChatMessage.objects.create(user_message=user_message, bot_response=bot_response)
             print(f"DEBUG: Sending response: {bot_response}")
             return JsonResponse({'response': bot_response})
-        else:
-            print("DEBUG: No message received")
-            return JsonResponse({'response': 'No message received'}, status=400)
+        except json.JSONDecodeError:
+            print("DEBUG: Invalid JSON")
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
     else:
-        return JsonResponse({'response': 'Invalid request'}, status=400)
-
-
+        print("DEBUG: Invalid request method")
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
