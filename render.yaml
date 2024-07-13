@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: chatbot-frontend
+    env: python
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+    startCommand: "gunicorn chatbot_project.wsgi:application"
+    staticPublishPath: staticfiles
+    routes:
+      - type: static
+        name: Static Files
+        path: /static
+        publish: staticfiles
