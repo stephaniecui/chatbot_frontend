@@ -21,7 +21,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('chatbot/', include('chatbot_app.urls')),
+    path('chatbot/', include('chatbot_app.urls')),  # Include chatbot app URLs
+    path('', chatbot_views.index, name='index'),  # Direct root URL to the index view of chatbot_app
 ]
 
 if settings.DEBUG:
