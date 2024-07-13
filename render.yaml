@@ -5,6 +5,9 @@ services:
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
     startCommand: "gunicorn chatbot_project.wsgi:application"
     staticPublishPath: staticfiles
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.4  # Specify the full version here
     routes:
       - type: static
         name: Static Files
