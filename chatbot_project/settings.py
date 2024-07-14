@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+import dj_database_url
 from decouple import config 
 
 ANTHROPIC_API_KEY = config('ANTHROPIC_API_KEY')
@@ -80,14 +81,11 @@ WSGI_APPLICATION = 'chatbot_project.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),          # This reads the DB_NAME environment variable
-        'USER': config('DB_USER'),          # This reads the DB_USER environment variable
-        'PASSWORD': config('DB_PASSWORD'),  # This reads the DB_PASSWORD environment variable
-        'HOST': config('DB_HOST'),          # This reads the DB_HOST environment variable
-        'PORT': config('DB_PORT', default='5432'),  # This reads the DB_PORT environment variable, defaulting to 5432
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 # Password validation
