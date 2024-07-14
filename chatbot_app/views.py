@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from .claude_api import client
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import ChatMessage
