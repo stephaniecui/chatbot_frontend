@@ -13,6 +13,9 @@ function getCookie(name) {
     return cookieValue;
 }
 
+function formatResponse(response) {
+    return response.replace(/\n/g, '<br>');
+}
 function sendMessage() {
     const userInput = document.getElementById('user-input').value;
     const chatBox = document.getElementById('chat-box');
@@ -32,6 +35,7 @@ function sendMessage() {
     })
     .then(response => response.json())
     .then(data => {
+        const formattedResponse = formatResponse(data.response);
         chatBox.innerHTML += `<div class="bot-response">${data.response}</div>`;
         chatBox.scrollTop = chatBox.scrollHeight;
     })
