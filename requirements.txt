@@ -37,3 +37,4 @@ tokenizers==0.19.1
 tqdm==4.66.4
 typing_extensions==4.12.2
 urllib3==2.2.2
+dj-database-url==2.1.0
