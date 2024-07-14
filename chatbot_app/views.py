@@ -16,6 +16,7 @@ def chatbot_response(request):
             user_message = data.get('message', '')
             print(f"DEBUG: Received message: {user_message}")
             bot_response = get_claude_response(user_message)
+            bot_response = bot_response.replace("\n", "<br>")
             ChatMessage.objects.create(user_message=user_message, bot_response=bot_response)
             print(f"DEBUG: Sending response: {bot_response}")
             return JsonResponse({'response': bot_response})
