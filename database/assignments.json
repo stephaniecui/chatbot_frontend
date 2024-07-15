@@ -1,0 +1,42 @@
+[
+  {
+    "content": "Submit research paper on AI ethics",
+    "metadata": {
+      "course": "CS405 AI and Society",
+      "due_date": "2024-08-15",
+      "submission_method": "Online portal"
+    }
+  },
+  {
+    "content": "Complete problem set on differential equations",
+    "metadata": {
+      "course": "MATH301 Advanced Calculus",
+      "due_date": "2024-07-30",
+      "submission_method": "In-class"
+    }
+  },
+  {
+    "content": "Present group project on renewable energy solutions",
+    "metadata": {
+      "course": "ENG350 Sustainable Engineering",
+      "due_date": "2024-09-05",
+      "submission_method": "In-class presentation"
+    }
+  },
+  {
+    "content": "Submit lab report on quantum entanglement experiment",
+    "metadata": {
+      "course": "PHYS420 Quantum Mechanics II",
+      "due_date": "2024-08-22",
+      "submission_method": "Email to professor"
+    }
+  },
+  {
+    "content": "Develop and submit a small web application",
+    "metadata": {
+      "course": "CS280 Web Development",
+      "due_date": "2024-09-10",
+      "submission_method": "GitHub repository"
+    }
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "content": "CS101 Introduction to Programming",
+    "metadata": {
+      "day": "Monday",
+      "time": "09:00-11:00",
+      "location": "Room 302, Engineering Building"
+    }
+  },
+  {
+    "content": "MATH201 Linear Algebra",
+    "metadata": {
+      "day": "Tuesday",
+      "time": "13:00-15:00",
+      "location": "Lecture Hall A, Mathematics Department"
+    }
+  },
+  {
+    "content": "PHYS150 Mechanics and Relativity",
+    "metadata": {
+      "day": "Wednesday",
+      "time": "10:00-12:00",
+      "location": "Physics Laboratory 1"
+    }
+  },
+  {
+    "content": "ENG102 Academic Writing for Engineers",
+    "metadata": {
+      "day": "Thursday",
+      "time": "14:00-16:00",
+      "location": "Room 105, Arts Building"
+    }
+  },
+  {
+    "content": "CS150 Data Structures and Algorithms",
+    "metadata": {
+      "day": "Friday",
+      "time": "11:00-13:00",
+      "location": "Computer Lab 3, Computing Building"
+    }
+  }
+]
