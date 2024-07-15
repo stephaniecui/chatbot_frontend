@@ -16,6 +16,7 @@ function getCookie(name) {
 function formatResponse(response) {
     return response.replace(/\n/g, '<br>');
 }
+
 function sendMessage() {
     const userInput = document.getElementById('user-input').value;
     const chatBox = document.getElementById('chat-box');
@@ -25,7 +26,7 @@ function sendMessage() {
     chatBox.innerHTML += `<div class="user-message">${userInput}</div>`;
     document.getElementById('user-input').value = '';
 
-    fetch('https://chatbot-frontend-po7w.onrender.com/chatbot/chat/', { // Make sure this URL is correct
+    fetch('https://chatbot-frontend-po7w.onrender.com/chatbot/chat/', { // Ensure this URL is correct
         method: 'POST',
         headers: {
             'Content-Type': 'application/json', // Ensure the content type is correct
@@ -36,7 +37,7 @@ function sendMessage() {
     .then(response => response.json())
     .then(data => {
         const formattedResponse = formatResponse(data.response);
-        chatBox.innerHTML += `<div class="bot-response">${data.response}</div>`;
+        chatBox.innerHTML += `<div class="bot-response">${formattedResponse}</div>`;
         chatBox.scrollTop = chatBox.scrollHeight;
     })
     .catch(error => console.error('Error:', error));
