@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import ChatMessage
 from django.conf import settings
+import re
 
 # Initialize the client with your API key
 client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
