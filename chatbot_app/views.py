@@ -194,7 +194,7 @@ def process_user_input(user_input):
     return None
 
 # Initialize the GlossaryManager
-glossary_manager = GlossaryManager('database/glossary.json')
+glossary_manager = GlossaryManager(os.path.join(settings.BASE_DIR, 'database/glossary.json'))
 
 ### Claude time
 
@@ -215,41 +215,5 @@ def get_claude_response(prompt: str) -> str:
     for db_name, entries in relevant_info.items():
         formatted_info += f"\n{db_name.upper()}:\n"
         for entry in entries:
-            formatted_info += f"- Content: {entry.content}\n"
-            formatted_info += f"  Metadata: {json.dumps(entry.metadata, indent=2)}\n"
+            formatted
 
-    try:
-        message = client.messages.create(
-            model="claude-3-5-sonnet-20240620",
-            max_tokens=1000,
-            system=SYSTEM_PROMPT,
-
-            
-            messages=[
-                {"role": "user", "content": f"{formatted_info}\n\nConversation context:\n{context}\n\nUser's new question: {prompt}"}
-            ]
-            
-        )
-        response = message.content[0].text
-        conversation_manager.update(prompt, response)
-        return response
-    except Exception as e:
-        return f"An error occurred: {str(e)}"
-
-# Main loop
-def main():
-    print("Welcome to Impy, your Imperial College London assistant!")
-    print("Type 'exit' to end the conversation.")
-    
-    while True:
-        user_input = input("\nYou: ").strip()
-        
-        if user_input.lower() == 'exit':
-            print("Thank you for chatting with Impy. Goodbye!")
-            break
-        
-        response = get_claude_response(user_input)
-        print(f"\nImpy: {response}")
-
-if __name__ == "__main__":
-    main()
