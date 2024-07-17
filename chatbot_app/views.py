@@ -211,9 +211,6 @@ def get_claude_response(prompt: str) -> str:
     #print(f"DEBUG - Context used for API call: {context}")
 
     # Format the relevant_info for Claude
-    formatted_info = "Relevant information:\n"
-    for db_name, entries in relevant_info.items():
-        formatted_info += f"\n{db_name.upper()}:\n"
-        for entry in entries:
-            formatted
+    formatted_info = "Relevant information:\n
+
 
