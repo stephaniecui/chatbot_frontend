@@ -77,3 +77,28 @@ body {
     background-color: #0056b3;
 }
 
+.navbar {
+    background-color: #004080;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 24px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    transition: background-color 0.3s ease;
+    z-index: 1000;
+}
+
+.navbar.navbar-light .navbar-brand {
+    color: white;
+}
+
+/* Fade navbar on scroll */
+body {
+    height: 200vh; /* To enable scrolling for demo purposes */
+}
+
+.navbar.scrolled {
+    background-color: rgba(0, 64, 128, 0.8);
+}
