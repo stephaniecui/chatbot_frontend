@@ -1,42 +1,152 @@
 [
   {
-    "content": "Submit research paper on AI ethics",
+    "content": "Assignment 1 (MATE40001 M&C1)",
     "metadata": {
-      "course": "CS405 AI and Society",
-      "due_date": "2024-08-15",
-      "submission_method": "Online portal"
+      "course": "MATE40001 M&C1",
+      "due_date": "2023-11-20",
+      "submission_method": "To be confirmed",
+      "percentage": 15,
+      "assignment_type": "Group coursework"
     }
   },
   {
-    "content": "Complete problem set on differential equations",
+    "content": "Assignment 2 (MATE40001 M&C1)",
     "metadata": {
-      "course": "MATH301 Advanced Calculus",
-      "due_date": "2024-07-30",
-      "submission_method": "In-class"
+      "course": "MATE40001 M&C1",
+      "due_date": "2023-12-04",
+      "submission_method": "To be confirmed",
+      "percentage": 35,
+      "assignment_type": "Summative exam"
     }
   },
   {
-    "content": "Present group project on renewable energy solutions",
+    "content": "Assignment 3 (MATE40001 M&C1)",
     "metadata": {
-      "course": "ENG350 Sustainable Engineering",
-      "due_date": "2024-09-05",
-      "submission_method": "In-class presentation"
+      "course": "MATE40001 M&C1",
+      "due_date": "2024-02-26",
+      "submission_method": "To be confirmed",
+      "percentage": 15,
+      "assignment_type": "Midterm exam"
     }
   },
   {
-    "content": "Submit lab report on quantum entanglement experiment",
+    "content": "Assignment 4 (MATE40001 M&C1)",
     "metadata": {
-      "course": "PHYS420 Quantum Mechanics II",
-      "due_date": "2024-08-22",
-      "submission_method": "Email to professor"
+      "course": "MATE40001 M&C1",
+      "due_date": "2024-05-27",
+      "submission_method": "To be confirmed",
+      "percentage": 35,
+      "assignment_type": "Project presentation"
     }
   },
   {
-    "content": "Develop and submit a small web application",
+    "content": "Assignment 1 (MATE40002 Perf1)",
     "metadata": {
-      "course": "CS280 Web Development",
-      "due_date": "2024-09-10",
-      "submission_method": "GitHub repository"
+      "course": "MATE40002 Perf1",
+      "due_date": "2023-11-20",
+      "submission_method": "To be confirmed",
+      "percentage": 30,
+      "assignment_type": "Lab report"
+    }
+  },
+  {
+    "content": "Assignment 2 (MATE40002 Perf1)",
+    "metadata": {
+      "course": "MATE40002 Perf1",
+      "due_date": "2024-05-06",
+      "submission_method": "To be confirmed",
+      "percentage": 10,
+      "assignment_type": "Problem set"
+    }
+  },
+  {
+    "content": "Assignment 3 (MATE40002 Perf1)",
+    "metadata": {
+      "course": "MATE40002 Perf1",
+      "due_date": "2024-05-27",
+      "submission_method": "To be confirmed",
+      "percentage": 30,
+      "assignment_type": "Final project"
+    }
+  },
+  {
+    "content": "Assignment 4 (MATE40002 Perf1)",
+    "metadata": {
+      "course": "MATE40002 Perf1",
+      "due_date": "2024-06-03",
+      "submission_method": "To be confirmed",
+      "percentage": 30,
+      "assignment_type": "Summative exam"
+    }
+  },
+  {
+    "content": "Assignment 1 (MATE40003 EngPrac1)",
+    "metadata": {
+      "course": "MATE40003 EngPrac1",
+      "due_date": "2023-11-06",
+      "submission_method": "To be confirmed",
+      "percentage": 15,
+      "assignment_type": "Lab report"
+    }
+  },
+  {
+    "content": "Assignment 2 (MATE40003 EngPrac1)",
+    "metadata": {
+      "course": "MATE40003 EngPrac1",
+      "due_date": "2024-01-08",
+      "submission_method": "To be confirmed",
+      "percentage": 15,
+      "assignment_type": "Project report"
+    }
+  },
+  {
+    "content": "Assignment 3 (MATE40003 EngPrac1)",
+    "metadata": {
+      "course": "MATE40003 EngPrac1",
+      "due_date": "2024-01-15",
+      "submission_method": "To be confirmed",
+      "percentage": 10,
+      "assignment_type": "Presentation"
+    }
+  },
+  {
+    "content": "Assignment 4 (MATE40003 EngPrac1)",
+    "metadata": {
+      "course": "MATE40003 EngPrac1",
+      "due_date": "2024-05-06",
+      "submission_method": "To be confirmed",
+      "percentage": 10,
+      "assignment_type": "Lab report"
+    }
+  },
+  {
+    "content": "Assignment 5 (MATE40003 EngPrac1)",
+    "metadata": {
+      "course": "MATE40003 EngPrac1",
+      "due_date": "2024-05-27",
+      "submission_method": "To be confirmed",
+      "percentage": 30,
+      "assignment_type": "Final project"
+    }
+  },
+  {
+    "content": "Assignment 6 (MATE40003 EngPrac1)",
+    "metadata": {
+      "course": "MATE40003 EngPrac1",
+      "due_date": "2024-05-27",
+      "submission_method": "To be confirmed",
+      "percentage": 5,
+      "assignment_type": "Peer assessment"
+    }
+  },
+  {
+    "content": "Assignment 7 (MATE40003 EngPrac1)",
+    "metadata": {
+      "course": "MATE40003 EngPrac1",
+      "due_date": "2024-06-03",
+      "submission_method": "To be confirmed",
+      "percentage": 15,
+      "assignment_type": "Final presentation"
     }
   }
 ]
