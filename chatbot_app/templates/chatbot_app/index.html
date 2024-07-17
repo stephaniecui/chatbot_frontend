@@ -7,28 +7,12 @@
     <link rel="stylesheet" href="https://stephaniecui.github.io/chatbot_frontend/chatbot_app/static/chatbot_app/style.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Impy: Your Imperial College Chatbot</a>
-        <div class="navbar-nav ml-auto">
-            {% if user.is_authenticated %}
-            <span class="navbar-text mr-3">Welcome, {{ user.username }}</span>
-            <a class="nav-item nav-link" href="logout">Logout</a>
-            {% else %}
-            <a class="nav-item nav-link" href="login">Login</a>
-            <a class="nav-item nav-link" href="register">Register</a>
-            {% endif %}
-        </div>
-    </nav>
     <div class="chat-container">
-        <div id="chat-box" class="chat-box">
-            <div class="bot-message">
-                Welcome to Impy, the Imperial College London Chatbot!<br>
-            </div>
-        </div>
         <div class="chat-header">
             <h1>Impy</h1>
             <p>Your Imperial College London Chatbot</p>
         </div>
+        <div class="chat-box" id="chat-box"></div>
         <div class="chat-input">
             <textarea id="user-input" placeholder="Type your message here..."></textarea>
             <button id="send-button">Send</button>
