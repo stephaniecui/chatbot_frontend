@@ -91,7 +91,6 @@ class ConversationManager:
             context += f"{role.capitalize()}: {content}\n"
         return context
 
-
 class ConversationManager:
     def __init__(self):
         self.memory = ""
@@ -112,7 +111,7 @@ class ConversationManager:
         self.memory = self.memory[-500:]
 
     def generate_summary(self):
-        prompt = f"""Summarize the following exchange in one concise sentences, as if you're explaining to Claude (the AI) what was discussed. Use "you" to refer to Claude/Impy, and "the user" for the human. Focus on the key points and any changes in topic:
+        prompt = f"""Summarize the following exchange in one concise sentence, as if you're explaining to Claude (the AI) what was discussed. Use "you" to refer to Claude/Impy, and "the user" for the human. Focus on the key points and any changes in topic:
 
 User: {self.current_exchange['user']}
 Assistant: {self.current_exchange['assistant']}
@@ -135,6 +134,7 @@ Summary:"""
 
     def get_context(self):
         return self.memory
+
 # Usage in the main loop
 conversation_manager = ConversationManager()
 
@@ -200,17 +200,74 @@ glossary_manager = GlossaryManager(os.path.join(settings.BASE_DIR, 'database/glo
 
 def get_claude_response(prompt: str) -> str:
 
-    #Glossary function to avoid token
+    # Glossary function to avoid token
     glossary_response = process_user_input(prompt)
-    if glossary_response:
+    if (glossary_response):
         return glossary_response
 
     relevant_info = multi_db.search_all(prompt)
-    #Context
+    # Context
     context = conversation_manager.get_context()
-    #print(f"DEBUG - Context used for API call: {context}")
 
     # Format the relevant_info for Claude
-    formatted_info = "Relevant information:\n
+    formatted_info = "Relevant information:\n"
+    for db_name, entries in relevant_info.items():
+        formatted_info += f"\n{db_name.upper()}:\n"
+        for entry in entries:
+            formatted_info += f"- Content: {entry.content}\n"
+            formatted_info += f"  Metadata: {json.dumps(entry.metadata, indent=2)}\n"
+
+    try:
+        message = client.messages.create(
+            model="claude-3-5-sonnet-20240620",
+            max_tokens=1000,
+            system=SYSTEM_PROMPT,
+            messages=[
+                {"role": "user", "content": f"{formatted_info}\n\nConversation context:\n{context}\n\nUser's new question: {prompt}"}
+            ]
+        )
+        response = message.content[0].text
+        conversation_manager.update(prompt, response)
+        return response
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
+
+# Main loop
+def main():
+    print("Welcome to Impy, your Imperial College London assistant!")
+    print("Type 'exit' to end the conversation.")
+    
+    while True:
+        user_input = input("\nYou: ").strip()
+        
+        if user_input.lower() == 'exit':
+            print("Thank you for chatting with Impy. Goodbye!")
+            break
+        
+        response = get_claude_response(user_input)
+        print(f"\nImpy: {response}")
+
+if __name__ == "__main__":
+    main()
+def index(request):
+    return render(request, 'chatbot_app/index.html')
+
+@csrf_exempt
+def chatbot_response(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            user_message = data.get('message', '')
+            print(f"DEBUG: Received message: {user_message}")
+
+            # Claude response
+            response = get_claude_response(user_message)
+            ChatMessage.objects.create(user_message=user_message, bot_response=response)
+            return JsonResponse({'response': response})
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
 
 
