@@ -16,7 +16,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'chatbot_project.settings')
 
 application = ProtocolTypeRouter({
     "http": URLRouter([
-        path("chatbot/", fastapi_app),
+        path("chatbot/chat/", fastapi_app),
         path("", get_asgi_application()),
     ]),
 })
