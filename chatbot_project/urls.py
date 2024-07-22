@@ -18,10 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.shortcuts import redirect
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('chatbot/', include('chatbot_app.urls')),  # Include chatbot app URLs
+    path('', lambda request: redirect('chatbot/')),  # Redirect root URL to FastAPI app
 ]
 
 if settings.DEBUG:
