@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import get_asgi_application
+from .views import index
 
 urlpatterns = [
-    path('', get_asgi_application()),  # Route all paths to FastAPI app
+    path('', index, name='index'),  # Simple Django view for root
 ]
