@@ -355,18 +355,6 @@ async def chat(request: Request):
 def index(request):
     return HttpResponse("Welcome to Impy, your Imperial College London assistant!")
 
-# Integrate FastAPI with Django using ASGIHandler
-from django.core.handlers.asgi import ASGIHandler
-
-class DjangoASGIHandler(ASGIHandler):
-    async def __call__(self, scope, receive, send):
-        if scope['type'] == 'http' and scope['path'].startswith('/chatbot/'):
-            await WSGIMiddleware(app)(scope, receive, send)
-        else:
-            await super().__call__(scope, receive, send)
-
-def get_asgi_application():
-    django_asgi_app = DjangoASGIHandler()
-    return django_asgi_app
-
+# Integrate FastAPI with Django using WSGIMiddleware
+fastapi_app = WSGIMiddleware(app)
 
