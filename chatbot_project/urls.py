@@ -18,12 +18,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from chatbot_app import views as chatbot_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('chatbot/', include('chatbot_app.urls')),  # Include chatbot app URLs
-    path('', chatbot_views.index, name='index'),  # Direct root URL to the index view of chatbot_app
 ]
 
 if settings.DEBUG:
