@@ -350,9 +350,14 @@ async def chat(request: Request):
 
     return StreamingResponse(get_claude_response_stream(prompt, multi_db, conversation_manager), media_type="text/plain")
 
+# Simple Django view for the root URL
+def index(request):
+    return HttpResponse("Welcome to Impy, your Imperial College London assistant!")
+
 # Integrate FastAPI with Django
-def fastapi_app(request):
-    return WSGIMiddleware(app)(request)
+def fastapi_app():
+    django_app = get_wsgi_application()
+    return WSGIMiddleware(app)
 
 if __name__ == "__main__":
     import uvicorn
