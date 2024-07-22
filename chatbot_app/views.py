@@ -42,6 +42,7 @@ from datetime import datetime
 import asyncio
 from fastapi import FastAPI, Request
 from fastapi.responses import StreamingResponse
+from starlette.middleware.wsgi import WSGIMiddleware
 from django.http import HttpResponse
 from django.shortcuts import render
 
