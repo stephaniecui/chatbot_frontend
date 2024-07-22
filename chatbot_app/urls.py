@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import fastapi_app
+from .views import get_asgi_application
 
 urlpatterns = [
-    path('', fastapi_app),  # Route all paths to FastAPI app
+    path('', get_asgi_application()),  # Route all paths to FastAPI app
 ]
