@@ -44,6 +44,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import StreamingResponse
 from starlette.middleware.wsgi import WSGIMiddleware
 from django.http import HttpResponse
+from django.core.wsgi import get_wsgi_application
 from django.shortcuts import render
 
 app = FastAPI()
@@ -354,62 +355,18 @@ async def chat(request: Request):
 def index(request):
     return HttpResponse("Welcome to Impy, your Imperial College London assistant!")
 
-# Integrate FastAPI with Django
-def fastapi_app():
-    django_app = get_wsgi_application()
-    return WSGIMiddleware(app)
+# Integrate FastAPI with Django using ASGIHandler
+from django.core.handlers.asgi import ASGIHandler
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+class DjangoASGIHandler(ASGIHandler):
+    async def __call__(self, scope, receive, send):
+        if scope['type'] == 'http' and scope['path'].startswith('/chatbot/'):
+            await WSGIMiddleware(app)(scope, receive, send)
+        else:
+            await super().__call__(scope, receive, send)
 
-# MAIN #
-# This is where everything is loaded up, Claude, the databases, the conversation manager, etc.
-def main():
-    print("Welcome to Impy, your Imperial College London assistant!")
-    # Firsts asks the user for year and course
-    user_profile = initialize_user_profile()
-    
-    # Then loads up the relevant databases based on that info
-    multi_db = MultiDB(user_profile)
-    multi_db.load_databases('database')
-
-    # Boots up the conversation manager for the memory
-    conversation_manager = ConversationManager()
-
-    print("Type 'exit' to end the conversation or 'new' to start a new conversation.")
-    
-    # Variable to figure out if the conversation is ongoing
-    is_new_conversation = True
-
-    # Will keep looping forever until a break
-    while True:
-        user_input = input("\nYou: ").strip()
-        
-        # You can write 'exit' to stop the conversation and the program
-        if user_input.lower() == 'exit':
-            print("Thank you for chatting with Impy. Goodbye!")
-            break
-        # You can write 'new' just to restart the conversation, does all those previous steps
-        elif user_input.lower() == 'new':
-            print("Starting a new conversation.")
-            user_profile = initialize_user_profile()
-            multi_db = MultiDB(user_profile)
-            multi_db.load_databases('database')
-            conversation_manager = ConversationManager()
-            is_new_conversation = True
-            continue
-        
-        # Calls on Claude and prints the conversation
-        response = get_claude_response(user_input, multi_db, conversation_manager, is_new_conversation)
-        print(f"\nImpy: {response}")
-        
-        # Notifies that this is now an ongoing conversation
-        is_new_conversation = False
-
-
-# The final step, just calls the main function to get things going
-if __name__ == "__main__":
-    main()
+def get_asgi_application():
+    django_asgi_app = DjangoASGIHandler()
+    return django_asgi_app
 
 
