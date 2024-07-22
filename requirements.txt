@@ -42,3 +42,4 @@ dj-database-url==2.1.0
 fastapi
 uvicorn
 starlette
+channels
