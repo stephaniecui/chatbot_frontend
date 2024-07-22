@@ -1,7 +1,6 @@
 from django.urls import path
-from .views import index, chatbot_response
+from .views import fastapi_app
 
 urlpatterns = [
-    path('', index, name='index'),
-    path('chat/', chatbot_response, name='chatbot_response'),
+    path('', fastapi_app),  # Route all paths to FastAPI app
 ]
