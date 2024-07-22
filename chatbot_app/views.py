@@ -350,6 +350,10 @@ async def chat(request: Request):
 
     return StreamingResponse(get_claude_response_stream(prompt, multi_db, conversation_manager), media_type="text/plain")
 
+# Integrate FastAPI with Django
+def fastapi_app(request):
+    return WSGIMiddleware(app)(request)
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
