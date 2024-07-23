@@ -171,6 +171,7 @@ async def get_claude_response(prompt: str, multi_db, conversation_manager, is_ne
     except Exception as e:
         yield f"An error occurred: {str(e)}"
 
+@csrf_exempt
 @app.post("/chatbot/chat/")
 async def chat(request: Request):
     data = await request.json()
@@ -189,7 +190,6 @@ async def chat(request: Request):
 def index(request):
     return render(request, 'chatbot_app/index.html')
 
-@csrf_exempt
 def chatbot_response(request):
     if request.method == 'POST':
         try:
