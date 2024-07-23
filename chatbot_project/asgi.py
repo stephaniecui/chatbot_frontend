@@ -14,6 +14,8 @@ from chatbot_app.views import fastapi_app
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'chatbot_project.settings')
 
+django_asgi_app = get_asgi_application()
+
 application = ProtocolTypeRouter({
     "http": URLRouter([
         path("chatbot/chat/", fastapi_app),
