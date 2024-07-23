@@ -13,6 +13,7 @@ from fastapi.responses import StreamingResponse
 from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.wsgi import WSGIMiddleware
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
@@ -205,5 +206,5 @@ async def chat(request: Request):
 def index(request):
     return HttpResponse("Welcome to Impy, your Imperial College London assistant!")
 
-# Integrate FastAPI with Django using ASGI
-fastapi_app = app
+# Integrate FastAPI with Django using WSGIMiddleware
+fastapi_app = WSGIMiddleware(app)
