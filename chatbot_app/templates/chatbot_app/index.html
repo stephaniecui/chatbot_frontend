@@ -12,7 +12,14 @@
             <h1>Impy</h1>
             <p>Your Imperial College London Chatbot</p>
         </div>
-        <div class="chat-box" id="chat-box"></div>
+        <div class="chat-box" id="chat-box">
+            <div class="message user-message" id="user-bubble">
+                <div class="message-bubble"></div>
+            </div>
+            <div class="message bot-message" id="bot-bubble">
+                <div class="message-bubble"></div>
+            </div>
+        </div>
         <div class="chat-input">
             <textarea id="user-input" placeholder="Type your message here..."></textarea>
             <button id="send-button">Send</button>
@@ -23,19 +30,14 @@
     <script src="https://stephaniecui.github.io/chatbot_frontend/chatbot_app/static/chatbot_app/chat.js"></script>
     <script>
         document.getElementById('send-button').addEventListener('click', sendMessage);
-
         async function sendMessage() {
             const userInput = document.getElementById('user-input');
             const userMessage = userInput.value;
             userInput.value = '';
-
             // Display user message
-            appendMessage('user', userMessage);
-
-            const responseContainer = document.createElement('div');
-            responseContainer.classList.add('bot');
-            document.getElementById('chat-box').appendChild(responseContainer);
-
+            updateBubble('user-bubble', userMessage);
+            const botBubble = document.getElementById('bot-bubble');
+            botBubble.querySelector('.message-bubble').innerHTML = '';
             const response = await fetch('/chatbot/chat/', {
                 method: 'POST',
                 headers: {
@@ -44,7 +46,6 @@
                 },
                 body: JSON.stringify({ message: userMessage })
             });
-
             if (response.body) {
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
@@ -53,27 +54,21 @@
                     const { done, value } = await reader.read();
                     if (done) break;
                     result += decoder.decode(value);
-                    responseContainer.innerHTML = result;
-                    responseContainer.scrollIntoView();  // Ensure the latest message is visible
+                    updateBubble('bot-bubble', result);
                 }
             }
         }
-
-        function appendMessage(sender, message) {
-            const messageElement = document.createElement('div');
-            messageElement.classList.add(sender);
-            messageElement.textContent = message;
-            document.getElementById('chat-box').appendChild(messageElement);
-            messageElement.scrollIntoView();  // Ensure the latest message is visible
+        function updateBubble(id, message) {
+            const bubble = document.getElementById(id);
+            bubble.querySelector('.message-bubble').innerHTML = message;
+            bubble.scrollIntoView({ behavior: 'smooth', block: 'end' });
         }
-
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
                 const cookies = document.cookie.split(';');
                 for (let i = 0; i < cookies.length; i++) {
                     const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
                     if (cookie.substring(0, name.length + 1) === (name + '=')) {
                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                         break;
@@ -85,7 +80,4 @@
     </script>
 </body>
 </html>
-
-
-
 
