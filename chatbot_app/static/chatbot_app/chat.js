@@ -17,7 +17,7 @@ function formatResponse(response) {
     return response.replace(/\n/g, '<br>');
 }
 
-function sendMessage() {
+async function sendMessage() {
     const userInput = document.getElementById('user-input').value;
     const chatBox = document.getElementById('chat-box');
 
@@ -26,21 +26,36 @@ function sendMessage() {
     chatBox.innerHTML += `<div class="user-message">${userInput}</div>`;
     document.getElementById('user-input').value = '';
 
-    fetch('/chatbot/chat/', { // Ensure this URL is correct
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json', // Ensure the content type is correct
-            'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token if necessary
-        },
-        body: JSON.stringify({ message: userInput }) // Send data as JSON
-    })
-    .then(response => response.json())
-    .then(data => {
-        const formattedResponse = formatResponse(data.response);
-        chatBox.innerHTML += `<div class="bot-response">${formattedResponse}</div>`;
-        chatBox.scrollTop = chatBox.scrollHeight;
-    })
-    .catch(error => console.error('Error:', error));
+    const responseContainer = document.createElement('div');
+    responseContainer.classList.add('bot-response');
+    chatBox.appendChild(responseContainer);
+
+    try {
+        const response = await fetch('/chatbot/chat/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: JSON.stringify({ message: userInput })
+        });
+
+        if (response.body) {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let result = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                result += decoder.decode(value, { stream: true });
+                responseContainer.innerHTML = formatResponse(result);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
 
 // Ensure the send button event listener is properly set
@@ -53,4 +68,3 @@ document.getElementById('user-input').addEventListener('keypress', function (e) 
         e.preventDefault(); // Prevent newline in the textarea
     }
 });
-
