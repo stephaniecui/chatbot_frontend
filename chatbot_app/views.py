@@ -82,6 +82,9 @@ class MultiDB:
         for name, db in self.databases.items():
             results[name] = db.search(query, k)
         return results
+    
+    def reset_context(self):
+        self.databases = {}
 
 class ConversationManager:
     def __init__(self):
