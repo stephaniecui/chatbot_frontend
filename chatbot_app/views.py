@@ -206,4 +206,4 @@ def chatbot_response(request):
         return JsonResponse({'error': 'Invalid request method'}, status=400)
         
 # Integrate FastAPI with Django using WSGIMiddleware
-fastapi_app = WSGIMiddleware(app)
+fastapi_app = app
