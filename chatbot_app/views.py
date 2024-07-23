@@ -19,7 +19,8 @@ from django.shortcuts import render
 from django.conf import settings
 
 # Generate a secret key for sessions
-secret_key = "ed55a1a5842f9b8e92c2f7126b5cca73d4b2dea9835f435e6ecea0f201e09917"  # Replace this with your actual secret key
+import secrets
+secret_key = secrets.token_hex(32)  # Generate a 64-character long secret key
 
 # Initialize FastAPI app with middleware
 middleware = [
@@ -202,7 +203,7 @@ async def chat(request: Request):
 
 # Simple Django view for the root URL
 def index(request):
-    return render(request, 'chatbot_app/index.html')
-        
-# Integrate FastAPI with Django using WSGIMiddleware
+    return HttpResponse("Welcome to Impy, your Imperial College London assistant!")
+
+# Integrate FastAPI with Django using ASGI
 fastapi_app = app
