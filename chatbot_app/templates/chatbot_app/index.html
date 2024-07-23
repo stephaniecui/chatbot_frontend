@@ -18,6 +18,8 @@
             <button id="send-button">Send</button>
         </div>
     </div>
+    <!-- CSRF Token -->
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     <script src="https://stephaniecui.github.io/chatbot_frontend/chatbot_app/static/chatbot_app/chat.js"></script>
 </body>
 </html>
