@@ -14,7 +14,13 @@ function getCookie(name) {
 }
 
 function formatResponse(response) {
-    return response.replace(/\n/g, '<br>');
+    let formattedResponse = response.replace(/\n/g, '<br>');
+    
+    formattedResponse = formattedResponse.replace(/<br><br>/g, '</p><p>');
+    
+    formattedResponse = '<p>' + formattedResponse + '</p>';
+    
+    return formattedResponse;
 }
 
 async function sendMessage() {
