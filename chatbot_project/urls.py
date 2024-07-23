@@ -22,5 +22,3 @@ urlpatterns = [
     path('', include('chatbot_app.urls')),  # Include the URLs from chatbot_app
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
