@@ -1,7 +1,8 @@
+
 from django.urls import path
-from . import views
+from .views import index, chatbot_response
 
 urlpatterns = [
-    path('', views.index, name='index'),  # Main page
-    path('/chatbot/chat/', views.chatbot_response, name='chatbot_response'),  # Chatbot response endpoint
+    path('', index, name='index'),
+    path('chat/', chatbot_response, name='chatbot_response'),
 ]
