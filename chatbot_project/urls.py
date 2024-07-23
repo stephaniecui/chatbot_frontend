@@ -16,12 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from chatbot_app.views import fastapi_app, index  # Ensure 'index' is imported
+from django.views.generic import TemplateView
+from django.conf import settings
+from django.conf.urls.static import static
+from chatbot_app.views import fastapi_app, index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('chatbot/', include(fastapi_app.urls)),  # Include FastAPI URLs
-    path('', index, name='index'),  # Direct root URL to the index view of chatbot_app
+    path('chatbot/', fastapi_app),  # Use fastapi_app directly
+    path('', index, name='index'),
 ]
 
 if settings.DEBUG:
