@@ -3,13 +3,11 @@
     flex-direction: column;
     height: 100vh;
 }
-
 .chat-header {
     background-color: #f1f1f1;
     padding: 10px;
     text-align: center;
 }
-
 .chat-box {
     flex: 1;
     overflow-y: auto;
@@ -17,23 +15,21 @@
     background-color: #fff;
     border: 1px solid #ccc;
     display: flex;
-    flex-direction: column; /* Ensure messages stack from top to bottom */
+    flex-direction: column;
+    position: relative; /* Added for absolute positioning of messages */
 }
-
 .chat-input {
     display: flex;
     padding: 10px;
     background-color: #f1f1f1;
     border-top: 1px solid #ccc;
 }
-
 #user-input {
     flex: 1;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
-
 #send-button {
     padding: 10px 20px;
     margin-left: 10px;
@@ -43,68 +39,55 @@
     cursor: pointer;
     border-radius: 5px;
 }
-
 #send-button:hover {
     background-color: #0056b3;
 }
-
 .user-message, .bot-message {
-    display: flex;
-    margin: 10px 0;
+    position: absolute; /* Changed to absolute positioning */
+    top: 10px; /* Position at the top */
+    max-width: 40%; /* Limit width to avoid overlap */
 }
-
 .user-message {
-    justify-content: flex-start;
+    left: 10px; /* Position on the left */
 }
-
+.bot-message {
+    right: 10px; /* Position on the right */
+}
 .user-message .message-bubble {
-    background-color: #d1e7dd; /* User message background color */
-    color: #0f5132; /* User message text color */
+    background-color: #d1e7dd;
+    color: #0f5132;
     padding: 10px;
-    border-radius: 10px;
-    max-width: 80%;
+    border-radius: 20px; /* Increased for more bubble-like appearance */
     position: relative;
 }
-
 .user-message .message-bubble::after {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: -10px;
+    top: 50%;
+    left: -15px;
     width: 0;
     height: 0;
-    border: 10px solid transparent;
-    border-right-color: #d1e7dd; /* User message pointer color */
+    border: 15px solid transparent;
+    border-right-color: #d1e7dd;
     border-left: 0;
-    border-bottom: 0;
-    margin-top: -5px;
-    margin-left: -10px;
+    margin-top: -15px;
 }
-
-.bot-message {
-    justify-content: flex-end;
-}
-
 .bot-message .message-bubble {
-    background-color: #cce5ff; /* Bot message background color */
-    color: #004085; /* Bot message text color */
+    background-color: #cce5ff;
+    color: #004085;
     padding: 10px;
-    border-radius: 10px;
-    max-width: 80%;
+    border-radius: 20px; /* Increased for more bubble-like appearance */
     position: relative;
 }
-
 .bot-message .message-bubble::after {
     content: '';
     position: absolute;
-    bottom: 0;
-    right: -10px;
+    top: 50%;
+    right: -15px;
     width: 0;
     height: 0;
-    border: 10px solid transparent;
-    border-left-color: #cce5ff; /* Bot message pointer color */
+    border: 15px solid transparent;
+    border-left-color: #cce5ff;
     border-right: 0;
-    border-bottom: 0;
-    margin-top: -5px;
-    margin-right: -10px;
+    margin-top: -15px;
 }
