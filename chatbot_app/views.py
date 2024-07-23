@@ -234,9 +234,9 @@ def get_claude_response(prompt: str) -> str:
         return f"An error occurred: {str(e)}"
 
 def generate_streamed_response(response):
-    words = response.split()
-    for word in words:
-        yield word + ' '
+    paragraphs = response.split('\n')
+    for paragraph in paragraphs:
+        yield paragraph + '\n\n'
         time.sleep(0.1)  # Adjust the delay as needed
 
 def index(request):
