@@ -44,3 +44,4 @@ uvicorn
 starlette
 channels
 djangorestframework
+itsdangerous
