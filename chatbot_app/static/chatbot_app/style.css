@@ -46,15 +46,18 @@
     background-color: #0056b3;
 }
 
-.user-message, .bot-response {
+.user-message, .bot-message {
+    display: flex;
     margin: 10px 0;
-    padding: 10px;
-    border-radius: 5px;
-    max-width: 80%;
+}
+
+.user-message {
+    justify-content: flex-end;
 }
 
 .user-message .message-bubble {
-    background-color: #e1ffc7;
+    background-color: #d1e7dd; /* User message background color */
+    color: #0f5132; /* User message text color */
     padding: 10px;
     border-radius: 10px;
     max-width: 80%;
@@ -70,7 +73,7 @@
     width: 0;
     height: 0;
     border: 10px solid transparent;
-    border-left-color: #e1ffc7;
+    border-left-color: #d1e7dd; /* User message pointer color */
     border-right: 0;
     border-bottom: 0;
     margin-top: -5px;
@@ -82,7 +85,8 @@
 }
 
 .bot-message .message-bubble {
-    background-color: #f1f1f1;
+    background-color: #cce5ff; /* Bot message background color */
+    color: #004085; /* Bot message text color */
     padding: 10px;
     border-radius: 10px;
     max-width: 80%;
@@ -98,7 +102,7 @@
     width: 0;
     height: 0;
     border: 10px solid transparent;
-    border-right-color: #f1f1f1;
+    border-right-color: #cce5ff; /* Bot message pointer color */
     border-left: 0;
     border-bottom: 0;
     margin-top: -5px;
