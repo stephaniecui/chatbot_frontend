@@ -58,6 +58,15 @@ async function sendMessage() {
     }
 }
 
+function appendMessage(sender, message) {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add(sender + '-message');
+    messageElement.innerHTML = `<div class="message-bubble">${message}</div>`;
+    const chatBox = document.getElementById('chat-box');
+    chatBox.appendChild(messageElement);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
 // Ensure the send button event listener is properly set
 document.getElementById('send-button').addEventListener('click', sendMessage);
 
