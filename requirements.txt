@@ -43,3 +43,4 @@ fastapi
 uvicorn
 starlette
 channels
+djangorestframework
