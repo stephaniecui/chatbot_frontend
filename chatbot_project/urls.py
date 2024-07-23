@@ -15,16 +15,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
-from django.views.generic import TemplateView
-from django.conf import settings
-from django.conf.urls.static import static
-from chatbot_app.views import fastapi_app, index
+from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('chatbot/', fastapi_app),  # Use fastapi_app directly
-    path('', index, name='index'),
+    path('', include('chatbot_app.urls')),  # Include the URLs from chatbot_app
 ]
 
 if settings.DEBUG:
