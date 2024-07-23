@@ -10,8 +10,14 @@ from datetime import datetime
 import asyncio
 from fastapi import FastAPI, Request
 from fastapi.responses import StreamingResponse
-from starlette.middleware.wsgi import WSGIMiddleware
-from django.http import HttpResponse
+from starlette.middleware import Middleware
+from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.authentication import AuthenticationMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.sessions import SessionMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
+from starlette.middleware.errors import ServerErrorMiddleware
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.conf import settings
