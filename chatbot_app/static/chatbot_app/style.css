@@ -17,7 +17,7 @@
     background-color: #fff;
     border: 1px solid #ccc;
     display: flex;
-    flex-direction: column-reverse; /* This makes new messages appear at the top */
+    flex-direction: column; /* Ensure messages stack from top to bottom */
 }
 
 .chat-input {
