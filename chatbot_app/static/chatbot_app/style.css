@@ -42,13 +42,6 @@
 #send-button:hover {
     background-color: #0056b3;
 }
-.chat-box {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-}
 
 .message {
     max-width: 70%;
@@ -78,4 +71,12 @@
 .bot-message .message-bubble {
     background-color: #f1f0f0;
     color: black;
+}
+
+.message-bubble p {
+    margin: 0 0 10px 0;
+}
+
+.message-bubble p:last-child {
+    margin-bottom: 0;
 }
