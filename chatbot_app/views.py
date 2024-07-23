@@ -190,6 +190,7 @@ async def chat(request: Request):
 def index(request):
     return render(request, 'chatbot_app/index.html')
 
+@csrf_exempt
 def chatbot_response(request):
     if request.method == 'POST':
         try:
@@ -203,6 +204,6 @@ def chatbot_response(request):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
-
+        
 # Integrate FastAPI with Django using WSGIMiddleware
 fastapi_app = WSGIMiddleware(app)
