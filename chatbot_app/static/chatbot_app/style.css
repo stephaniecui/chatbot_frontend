@@ -1,80 +1,64 @@
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f9f9f9;
-    font-family: Arial, sans-serif;
-}
-
 .chat-container {
-    width: 400px;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
 .chat-header {
-    background-color: #007bff;
-    color: #fff;
+    background-color: #f1f1f1;
     padding: 10px;
     text-align: center;
 }
 
 .chat-box {
-    height: 300px;
-    padding: 10px;
+    flex: 1;
     overflow-y: auto;
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-}
-
-.user-message, .bot-response {
-    margin: 5px 0;
-    padding: 8px 12px;
-    border-radius: 4px;
-    max-width: 80%;
-}
-
-.user-message {
-    background-color: #007bff;
-    color: #fff;
-    align-self: flex-end;
-    text-align: right;
-}
-
-.bot-response {
-    background-color: #f1f1f1;
-    color: #333;
-    align-self: flex-start;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
 }
 
 .chat-input {
     display: flex;
     padding: 10px;
-    background: #f9f9f9;
+    background-color: #f1f1f1;
+    border-top: 1px solid #ccc;
 }
 
-.chat-input input {
+#user-input {
     flex: 1;
     padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-.chat-input button {
+#send-button {
     padding: 10px 20px;
+    margin-left: 10px;
     border: none;
     background-color: #007bff;
-    color: #fff;
-    border-radius: 4px;
+    color: white;
     cursor: pointer;
+    border-radius: 5px;
 }
 
-.chat-input button:hover {
+#send-button:hover {
     background-color: #0056b3;
 }
 
+.user-message, .bot-response {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 80%;
+}
 
+.user-message {
+    align-self: flex-end;
+    background-color: #e1ffc7;
+}
+
+.bot-response {
+    align-self: flex-start;
+    background-color: #f1f1f1;
+}
