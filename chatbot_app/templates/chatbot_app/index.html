@@ -2,15 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Chatbot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impy - Imperial College London Chatbot</title>
+    <link rel="stylesheet" href="https://stephaniecui.github.io/chatbot_frontend/chatbot_app/static/chatbot_app/style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>Impy</h1>
+            <p>Your Imperial College London Chatbot</p>
+        </div>
+        <div class="chat-box" id="chat-box"></div>
+        <div class="chat-input">
+            <textarea id="user-input" placeholder="Type your message here..."></textarea>
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+    <!-- CSRF Token -->
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <script src="https://stephaniecui.github.io/chatbot_frontend/chatbot_app/static/chatbot_app/chat.js"></script>
     <script>
-        async function sendMessage() {
-            const messageInput = document.getElementById('messageInput');
-            const userMessage = messageInput.value;
-            messageInput.value = '';
+        document.getElementById('send-button').addEventListener('click', sendMessage);
 
-            const responseContainer = document.getElementById('responseContainer');
-            responseContainer.innerHTML = '';  // Clear previous response
+        async function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const userMessage = userInput.value;
+            userInput.value = '';
+
+            // Display user message
+            appendMessage('user', userMessage);
+
+            const responseContainer = document.createElement('div');
+            responseContainer.classList.add('bot');
+            document.getElementById('chat-box').appendChild(responseContainer);
 
             const response = await fetch('/chatbot/chat/', {
                 method: 'POST',
@@ -30,8 +54,17 @@
                     if (done) break;
                     result += decoder.decode(value);
                     responseContainer.innerHTML = result;
+                    responseContainer.scrollIntoView();  // Ensure the latest message is visible
                 }
             }
+        }
+
+        function appendMessage(sender, message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add(sender);
+            messageElement.textContent = message;
+            document.getElementById('chat-box').appendChild(messageElement);
+            messageElement.scrollIntoView();  // Ensure the latest message is visible
         }
 
         function getCookie(name) {
@@ -50,14 +83,9 @@
             return cookieValue;
         }
     </script>
-</head>
-<body>
-    <h1>Chat with Impy</h1>
-    <input type="text" id="messageInput" placeholder="Type your message here...">
-    <button onclick="sendMessage()">Send</button>
-    <div id="responseContainer"></div>
 </body>
 </html>
+
 
 
 
