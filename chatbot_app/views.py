@@ -171,13 +171,16 @@ async def get_claude_response(prompt: str, multi_db, conversation_manager, is_ne
     except Exception as e:
         yield f"An error occurred: {str(e)}"
 
-@app.post("/chat")
+@app.post("/chatbot/chat/")
 async def chat(request: Request):
     data = await request.json()
     prompt = data.get("prompt", "")
     user_profile = data.get("user_profile", {"year": "1", "course": "Materials"})
     multi_db = MultiDB(user_profile)
-    multi_db.load_databases('database')
+    multi_db.add_database('success_guide', os.path.join(settings.BASE_DIR, 'database/success_guide.json'))
+    multi_db.add_database('timetables', os.path.join(settings.BASE_DIR, 'database/timetables.json'))
+    multi_db.add_database('assignments', os.path.join(settings.BASE_DIR, 'database/assignments.json'))
+    multi_db.add_database('glossary', os.path.join(settings.BASE_DIR, 'database/glossary.json'))
     conversation_manager = ConversationManager()
 
     return StreamingResponse(get_claude_response(prompt, multi_db, conversation_manager), media_type="text/plain")
@@ -194,7 +197,7 @@ def chatbot_response(request):
             user_message = data.get('message', '')
             print(f"DEBUG: Received message: {user_message}")
 
-            response = get_claude_response(user_message)
+            response = get_claude_response(user_message, multi_db, conversation_manager)
             return JsonResponse({'response': response})
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
