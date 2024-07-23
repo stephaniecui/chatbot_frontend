@@ -28,7 +28,7 @@ async function sendMessage() {
 
     const responseContainer = document.createElement('div');
     responseContainer.classList.add('bot-message');
-    chatBox.insertBefore(responseContainer, chatBox.firstChild);
+    chatBox.appendChild(responseContainer);
 
     try {
         const response = await fetch('/chatbot/chat/', {
