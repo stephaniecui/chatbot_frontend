@@ -53,12 +53,18 @@
     max-width: 80%;
 }
 
-.user-message {
-    align-self: flex-end;
+.user-message .message-textbox {
     background-color: #e1ffc7;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 80%;
+    align-self: flex-end;
 }
 
-.bot-response {
-    align-self: flex-start;
+.bot-response .message-textbox {
     background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 80%;
+    align-self: flex-start;
 }
