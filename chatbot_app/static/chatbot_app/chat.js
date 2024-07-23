@@ -22,8 +22,8 @@ async function sendMessage() {
     const chatBox = document.getElementById('chat-box');
 
     if (userInput.trim() === '') return;
-
-    chatBox.innerHTML += `<div class="user-message">${userInput}</div>`;
+    
+    appendMessage('user', userInput);
     document.getElementById('user-input').value = '';
 
     const responseContainer = document.createElement('div');
