@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import index, chatbot_response
+from . import views
 
 urlpatterns = [
-    path('', index, name='index'),  # Simple Django view for root
-    path('response/', chatbot_response, name='chatbot_response'),
+    path('', views.index, name='index'),  # Main page
+    path('/chatbot/chat/', views.chatbot_response, name='chatbot_response'),  # Chatbot response endpoint
 ]
