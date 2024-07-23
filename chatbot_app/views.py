@@ -11,18 +11,23 @@ import asyncio
 from fastapi import FastAPI, Request
 from fastapi.responses import StreamingResponse
 from starlette.middleware import Middleware
-from starlette.middleware.cors import CORSMiddleware
-from starlette.middleware.authentication import AuthenticationMiddleware
-from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from starlette.middleware.trustedhost import TrustedHostMiddleware
-from starlette.middleware.errors import ServerErrorMiddleware
-from django.http import HttpResponse, JsonResponse
+from starlette.middleware.cors import CORSMiddleware
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.conf import settings
 
-app = FastAPI()
+# Generate a secret key for sessions
+secret_key = "ed55a1a5842f9b8e92c2f7126b5cca73d4b2dea9835f435e6ecea0f201e09917"  # Replace this with your actual secret key
+
+# Initialize FastAPI app with middleware
+middleware = [
+    Middleware(SessionMiddleware, secret_key=secret_key),
+    Middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"]),
+]
+
+app = FastAPI(middleware=middleware)
 
 client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
@@ -198,21 +203,6 @@ async def chat(request: Request):
 # Simple Django view for the root URL
 def index(request):
     return render(request, 'chatbot_app/index.html')
-
-@csrf_exempt
-def chatbot_response(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body.decode('utf-8'))
-            user_message = data.get('message', '')
-            print(f"DEBUG: Received message: {user_message}")
-
-            response = get_claude_response(user_message, multi_db, conversation_manager)
-            return JsonResponse({'response': response})
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
         
 # Integrate FastAPI with Django using WSGIMiddleware
 fastapi_app = app
