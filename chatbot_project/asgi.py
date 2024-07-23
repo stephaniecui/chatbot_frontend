@@ -19,6 +19,6 @@ django_asgi_app = get_asgi_application()
 application = ProtocolTypeRouter({
     "http": URLRouter([
         path("chatbot/chat/", fastapi_app),
-        path("", get_asgi_application()),
+        path("", django_asgi_app),
     ]),
 })
