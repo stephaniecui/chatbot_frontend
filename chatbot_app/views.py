@@ -206,15 +206,14 @@ def get_claude_response(prompt, multi_db, conversation_manager, is_new_conversat
         )
         response = message.content[0].text
         conversation_manager.update(prompt, response)
-        
+        return response
     except Exception as e:
         return f"An error occurred: {str(e)}"
+    
 
 def generate_streamed_response(response):
     paragraphs = response.split('\n')
     for paragraph in paragraphs:
-        yield paragraph + ' '
-        time.sleep(0.1)  # Adjust the delay as needed
         words = paragraph.split()
         for word in words:
             yield word + ' '
@@ -252,3 +251,4 @@ def chatbot_response(request):
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
 
+  
