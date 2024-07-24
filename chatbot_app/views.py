@@ -180,9 +180,9 @@ Summary:"""
 
 # Claude time #
 
-def get_claude_response(prompt, multi_db, conversation_manager, is_new_conversation=False):
+def get_claude_response(prompt, multi_db, conversation_manager, conversation_history):
     # Checks if it's a new conversation to reset the DB context
-    if is_new_conversation:
+    if not conversation_history:
         multi_db.reset_context()
 
     # Helps find the relevant stuff based on the prompt
@@ -204,15 +204,19 @@ def get_claude_response(prompt, multi_db, conversation_manager, is_new_conversat
     context = conversation_manager.get_context()
 
     try:
+        messages = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            *conversation_history,
+            {"role": "user", "content": f"{formatted_info}\n\nConversation context:\n{context}\n\nUser's new question: {prompt}"}
+        ]
+        
         message = client.messages.create(
             # Currently using Claude's best model, efficient and powerful
             model="claude-3-5-sonnet-20240620",
             max_tokens=1000,
-            system=SYSTEM_PROMPT,
-            messages=[
-                {"role": "user", "content": f"{formatted_info}\n\nConversation context:\n{context}\n\nUser's new question: {prompt}"}
-            ]
+            messages=messages
         )
+        
         response = message.content[0].text
         conversation_manager.update(prompt, response)
         # finally, returns the response that Claude gives
