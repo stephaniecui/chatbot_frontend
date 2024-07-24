@@ -234,7 +234,7 @@ def chatbot_response(request):
             print(f"DEBUG: Received message: {user_message}")
 
             # Initialize user profile (this would be fetched from a real user session in a complete app)
-            user_profile = {"year": "1", "course": "Materials"}  # Default for example
+            user_profile = {"level": "ug"}
 
             # Initialize the database and conversation manager
             multi_db = MultiDB(user_profile)
