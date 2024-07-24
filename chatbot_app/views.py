@@ -122,7 +122,7 @@ class MultiDB:
 # CONVERSATION MANAGER #
 
 class ConversationManager:
-    def __init__(self, max_memory_length=1000):
+    def __init__(self, max_memory_length=1500):
         self.memory = ""
         self.current_exchange = {"user": "", "assistant": ""}
         self.client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
