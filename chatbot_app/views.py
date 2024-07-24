@@ -229,8 +229,8 @@ def generate_streamed_response(response):
         words = paragraph.split()
         for word in words:
             yield word + ' '
-            time.sleep(0.1)  # Adjust the delay as needed
-        yield '\n\n'  # Add a new paragraph
+            time.sleep(0.05)  # Reduced delay for faster response
+        yield '\n'
 
 def index(request):
     return render(request, 'chatbot_app/index.html')
