@@ -103,8 +103,8 @@ class MultiDB:
 
         # DEBUG: Print loaded databases for debugging
         print("Loaded databases:", list(self.databases.keys()))
-
-   def add_database(self, name, file_path):
+    
+    def add_database(self, name, file_path):
         db = VectorDB(name)
         with open(file_path, 'r') as f:
             data = json.load(f)
