@@ -1,7 +1,6 @@
 import os
 import json
 import time
-import pickle
 from typing import List, Dict, Any
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
