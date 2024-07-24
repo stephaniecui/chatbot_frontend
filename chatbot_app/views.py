@@ -256,7 +256,7 @@ def chatbot_response(request):
             # Get Claude response
             response = get_claude_response(user_message, multi_db, conversation_manager)
 
-            request.session['conversation_manager'] = pickle.dumps(conversation_manager)
+            request.session['conversation_manager'] = conversation_manager.get_context()
             request.session.modified = True
 
             # Stream the response
