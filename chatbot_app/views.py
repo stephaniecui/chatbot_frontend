@@ -1,6 +1,7 @@
 import os
 import json
 import time
+import pickle
 from typing import List, Dict, Any
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -247,10 +248,16 @@ def chatbot_response(request):
             multi_db = MultiDB(user_profile)
             multi_db.load_databases('database')
 
-            conversation_manager = ConversationManager()
+            if 'conversation_manager' in request.session:
+                conversation_manager = pickle.loads(request.session['conversation_manager'])
+            else:
+                conversation_manager = ConversationManager()
             
             # Get Claude response
             response = get_claude_response(user_message, multi_db, conversation_manager)
+
+            request.session['conversation_manager'] = pickle.dumps(conversation_manager)
+            request.session.modified = True
 
             # Stream the response
             return StreamingHttpResponse(generate_streamed_response(response), content_type='text/plain')
