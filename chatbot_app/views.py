@@ -222,6 +222,8 @@ def generate_streamed_response(response):
         yield '\n\n'  # Add a new paragraph
 
 def index(request):
+    # Clear the session data each time the page is loaded
+    request.session.flush()
     return render(request, 'chatbot_app/index.html')
 
 @csrf_exempt
