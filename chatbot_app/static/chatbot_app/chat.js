@@ -23,13 +23,14 @@ function formatResponse(response) {
     return formattedResponse;
 }
 
+let conversationHistory = [];
+
 async function sendMessage() {
     const userInput = document.getElementById('user-input').value;
     if (userInput.trim() === '') return;
     
     appendMessage('user', userInput);
     document.getElementById('user-input').value = '';
-
     const botMessageElement = appendMessage('bot', '');
 
     try {
@@ -39,7 +40,10 @@ async function sendMessage() {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken'),
             },
-            body: JSON.stringify({ message: userInput })
+            body: JSON.stringify({ 
+                message: userInput,
+                history: conversationHistory
+            })
         });
 
         if (response.body) {
@@ -54,6 +58,11 @@ async function sendMessage() {
                 scrollToBottom();
             }
         }
+
+        // Update conversation history
+            conversationHistory.push({ role: 'user', content: userInput });
+            conversationHistory.push({ role: 'assistant', content: result });
+        
     } catch (error) {
         console.error('Error:', error);
         botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
