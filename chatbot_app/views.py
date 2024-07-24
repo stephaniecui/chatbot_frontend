@@ -205,15 +205,14 @@ def get_claude_response(prompt, multi_db, conversation_manager, conversation_his
 
     try:
         messages = [
-            {"role": "system", "content": SYSTEM_PROMPT},
             *conversation_history,
             {"role": "user", "content": f"{formatted_info}\n\nConversation context:\n{context}\n\nUser's new question: {prompt}"}
         ]
         
         message = client.messages.create(
-            # Currently using Claude's best model, efficient and powerful
             model="claude-3-5-sonnet-20240620",
             max_tokens=1000,
+            system=SYSTEM_PROMPT,
             messages=messages
         )
         
