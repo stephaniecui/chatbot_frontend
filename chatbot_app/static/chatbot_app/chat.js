@@ -76,17 +76,6 @@ function scrollToBottom() {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// Ensure the send button event listener is properly set
-document.getElementById('send-button').addEventListener('click', sendMessage);
-
-// Handle "Enter" key press for better user experience
-document.getElementById('user-input').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        sendMessage();
-        e.preventDefault(); // Prevent newline in the textarea
-    }
-});
-
 // Automatically prompt the user for their level of study on page load
 window.onload = async function() {
     const botMessageElement = appendMessage('bot', '');
@@ -118,3 +107,14 @@ window.onload = async function() {
     }
     scrollToBottom();
 }
+
+// Ensure the send button event listener is properly set
+document.getElementById('send-button').addEventListener('click', sendMessage);
+
+// Handle "Enter" key press for better user experience
+document.getElementById('user-input').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        sendMessage();
+        e.preventDefault(); // Prevent newline in the textarea
+    }
+});
