@@ -206,8 +206,7 @@ def get_claude_response(prompt, multi_db, conversation_manager, is_new_conversat
         )
         response = message.content[0].text
         conversation_manager.update(prompt, response)
-        # finally, returns the response that Claude gives
-        return response
+        
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
