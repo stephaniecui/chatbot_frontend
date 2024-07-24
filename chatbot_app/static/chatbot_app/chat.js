@@ -86,3 +86,35 @@ document.getElementById('user-input').addEventListener('keypress', function (e) 
         e.preventDefault(); // Prevent newline in the textarea
     }
 });
+
+// Automatically prompt the user for their level of study on page load
+window.onload = async function() {
+    const botMessageElement = appendMessage('bot', '');
+    try {
+        const response = await fetch('/chatbot/chat/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: JSON.stringify({ message: '' }) // Initial empty message to trigger the prompt
+        });
+
+        if (response.body) {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let result = '';
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                result += decoder.decode(value, { stream: true });
+                botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(result);
+                scrollToBottom();
+            }
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
+    }
+    scrollToBottom();
+}
