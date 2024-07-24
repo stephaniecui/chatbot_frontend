@@ -43,7 +43,7 @@ Remember, your goal is to provide helpful, accurate, and context-appropriate res
 # This function is to ask the user for initial information on year and course.
 # If we have access to the year and course automatically via login this is where we would change the variable.
 def initialize_user_profile():
-    level = input("What is your level of study? (undergrad=ug, masters = pgt, PhD = pgr): ")
+    level = input("What is your level of study? (ug for undergraduate, pgt for masters, pgr for PhD): ")
     return {"level": level}
 
 # DATA ZONE #
@@ -98,9 +98,8 @@ class MultiDB:
         else:   
             print(f"No success guide found for {level} students")
 
-        # DEBUG: Print loaded databases for debugging
-        if debug:
-            print(f"Loaded databases: {success_guide_file}")
+       # DEBUG: Print loaded databases for debugging
+        print(f"Loaded databases: {success_guide_file}")
     
     def add_database(self, name, file_path):
         db = VectorDB(name)
