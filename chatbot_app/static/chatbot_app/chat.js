@@ -32,7 +32,7 @@ async function sendMessage() {
     appendMessage('user', userInput);
     document.getElementById('user-input').value = '';
     const botMessageElement = appendMessage('bot', '');
-
+    
     try {
         const response = await fetch('/chatbot/chat/', {
             method: 'POST',
@@ -49,23 +49,37 @@ async function sendMessage() {
         if (response.body) {
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
-            let result = '';
+            let fullResponse = '';
+
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
-                result += decoder.decode(value, { stream: true });
-                botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(result);
+                
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n');
+                
+                for (const line of lines) {
+                    if (line.trim() === '') continue;
+                    const data = JSON.parse(line);
+                    
+                    if (data.status === 'start') {
+                        // Clear any previous content
+                        botMessageElement.querySelector('.message-bubble').innerHTML = '';
+                    } else if (data.chunk) {
+                        fullResponse += data.chunk;
+                        botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
+                    } else if (data.status === 'end') {
+                        // Response is complete
+                        conversationHistory.push({ role: 'user', content: userInput });
+                        conversationHistory.push({ role: 'assistant', content: fullResponse });
+                    }
+                }
                 scrollToBottom();
             }
         }
-
-        // Update conversation history
-            conversationHistory.push({ role: 'user', content: userInput });
-            conversationHistory.push({ role: 'assistant', content: result });
-        
     } catch (error) {
         console.error('Error:', error);
-        botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
+        botMessageElement.querySelector('.message-bubble').innerHTML += '<br>Sorry, an error occurred while processing your request.';
     }
     scrollToBottom();
 }
