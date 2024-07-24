@@ -261,7 +261,13 @@ def chatbot_response(request):
             conversation_history.append({"role": "assistant", "content": response})
 
             # Stream the response
-            return StreamingHttpResponse(generate_streamed_response(response), content_type='text/plain')
+            def response_generator():
+                yield json.dumps({"status": "start"}) + '\n'
+                for chunk in generate_streamed_response(response):
+                    yield json.dumps({"chunk": chunk}) + '\n'
+                yield json.dumps({"status": "end"}) + '\n'
+
+            return StreamingHttpResponse(response_generator(), content_type='application/json')
 
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
