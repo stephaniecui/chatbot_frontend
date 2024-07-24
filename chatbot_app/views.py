@@ -244,7 +244,6 @@ def chatbot_response(request):
             data = json.loads(request.body.decode('utf-8'))
             user_message = data.get('message', '')
             conversation_history = data.get('history', [])
-            print(f"DEBUG: Received message: {user_message}")
 
             # Initialize user profile (this would be fetched from a real user session in a complete app)
             user_profile = {"year": "1", "course": "Materials"}  # Default for example
@@ -258,18 +257,13 @@ def chatbot_response(request):
             # Get Claude response
             response = get_claude_response(user_message, multi_db, conversation_manager, conversation_history)
 
-            # Update conversation history
-            conversation_history.append({"role": "user", "content": user_message})
-            conversation_history.append({"role": "assistant", "content": response})
-
             # Stream the response
             def response_generator():
-                yield json.dumps({"status": "start"}) + '\n'
-                for chunk in generate_streamed_response(response):
-                    yield json.dumps({"chunk": chunk}) + '\n'
-                yield json.dumps({"status": "end"}) + '\n'
+                for word in response.split():
+                    yield word + ' '
+                    time.sleep(0.05)  # Adjust delay as needed
 
-            return StreamingHttpResponse(response_generator(), content_type='application/json')
+            return StreamingHttpResponse(response_generator(), content_type='text/plain')
 
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
