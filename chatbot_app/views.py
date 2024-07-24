@@ -229,11 +229,17 @@ def chatbot_response(request):
         try:
             data = json.loads(request.body.decode('utf-8'))
             user_message = data.get('message', '')
-            print(f"DEBUG: Received message: {user_message}")
+            user_level = data.get('level', '')  # Get the user level from the request
+            print(f"DEBUG: Received message: {user_message}, Level: {user_level}")
+
+            if not user_level:
+                # If no user level provided, prompt for it
+                prompt = "What is your level of study? (ug for undergraduate, pgt for masters, pgr for PhD):"
+                return StreamingHttpResponse(generate_streamed_response(prompt), content_type='text/plain')
 
             # Initialize user profile (this would be fetched from a real user session in a complete app)
-            user_profile = {"level": "ug"}
-
+            user_profile = {"level": user_level}
+            
             # Initialize the database and conversation manager
             multi_db = MultiDB(user_profile)
             multi_db.load_databases('database')
