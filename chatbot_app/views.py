@@ -242,6 +242,7 @@ def chatbot_response(request):
         try:
             data = json.loads(request.body.decode('utf-8'))
             user_message = data.get('message', '')
+            conversation_history = data.get('history', [])
             print(f"DEBUG: Received message: {user_message}")
 
             # Initialize user profile (this would be fetched from a real user session in a complete app)
@@ -254,7 +255,11 @@ def chatbot_response(request):
             conversation_manager = ConversationManager()
 
             # Get Claude response
-            response = get_claude_response(user_message, multi_db, conversation_manager)
+            response = get_claude_response(user_message, multi_db, conversation_manager, conversation_history)
+
+            # Update conversation history
+            conversation_history.append({"role": "user", "content": user_message})
+            conversation_history.append({"role": "assistant", "content": response})
 
             # Stream the response
             return StreamingHttpResponse(generate_streamed_response(response), content_type='text/plain')
