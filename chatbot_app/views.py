@@ -240,8 +240,17 @@ def chatbot_response(request):
             user_message = data.get('message', '')
             print(f"DEBUG: Received message: {user_message}")
 
+            # Initialize user profile (this would be fetched from a real user session in a complete app)
+            user_profile = {"year": "1", "course": "Materials"}  # Default for example
+
+            # Initialize the database and conversation manager
+            multi_db = MultiDB(user_profile)
+            multi_db.load_databases('database')
+
+            conversation_manager = ConversationManager()
+
             # Get Claude response
-            response = get_claude_response(user_message)
+            response = get_claude_response(user_message, multi_db, conversation_manager)
 
             # Stream the response
             return StreamingHttpResponse(generate_streamed_response(response), content_type='text/plain')
@@ -250,4 +259,3 @@ def chatbot_response(request):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
-
