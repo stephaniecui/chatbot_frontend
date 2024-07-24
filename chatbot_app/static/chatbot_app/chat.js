@@ -1,3 +1,4 @@
+
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -22,7 +23,7 @@ function formatResponse(response) {
     
     return formattedResponse;
 }
-
+        
 async function sendMessage() {
     const userInput = document.getElementById('user-input').value;
     if (userInput.trim() === '') return;
@@ -38,46 +39,24 @@ async function sendMessage() {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken'),
             },
-            body: JSON.stringify({ 
-                message: userInput,
-                history: conversationHistory
-            })
+            body: JSON.stringify({ message: userInput })
         });
 
         if (response.body) {
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
-            let fullResponse = '';
-
+            let result = '';
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
-                
-                const chunk = decoder.decode(value);
-                const lines = chunk.split('\n');
-                
-                for (const line of lines) {
-                    if (line.trim() === '') continue;
-                    const data = JSON.parse(line);
-                    
-                    if (data.status === 'start') {
-                        // Clear any previous content
-                        botMessageElement.querySelector('.message-bubble').innerHTML = '';
-                    } else if (data.chunk) {
-                        fullResponse += data.chunk;
-                        botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
-                    } else if (data.status === 'end') {
-                        // Response is complete
-                        conversationHistory.push({ role: 'user', content: userInput });
-                        conversationHistory.push({ role: 'assistant', content: fullResponse });
-                    }
-                }
+                result += decoder.decode(value, { stream: true });
+                botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(result);
                 scrollToBottom();
             }
         }
     } catch (error) {
         console.error('Error:', error);
-        botMessageElement.querySelector('.message-bubble').innerHTML += '<br>Sorry, an error occurred while processing your request.';
+        botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
     }
     scrollToBottom();
 }
