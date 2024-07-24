@@ -214,7 +214,7 @@ def get_claude_response(prompt, multi_db, conversation_manager, is_new_conversat
 def generate_streamed_response(response):
     paragraphs = response.split('\n')
     for paragraph in paragraphs:
-        yield paragraph + '\n\n'
+        yield paragraph + ' '
         time.sleep(0.1)  # Adjust the delay as needed
         words = paragraph.split()
         for word in words:
