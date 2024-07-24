@@ -78,7 +78,7 @@ class MultiDB:
 
     def load_databases(self, base_path):
         # Ensure base_path is correct
-        base_path = os.path.join(os.path.dirname(__file__), base_path)
+        base_path = os.path.join(settings.BASE_DIR, base_path)
         
         # Loads universal databases, information relevant to all Imperial student/staff.
         for file_name in os.listdir(base_path):
