@@ -243,7 +243,7 @@ def chatbot_response(request):
         try:
             data = json.loads(request.body.decode('utf-8'))
             user_message = data.get('message', '')
-            conversation_history = data.get('history', [])
+            print(f"DEBUG: Received message: {user_message}")
 
             # Initialize user profile (this would be fetched from a real user session in a complete app)
             user_profile = {"year": "1", "course": "Materials"}  # Default for example
@@ -253,19 +253,15 @@ def chatbot_response(request):
             multi_db.load_databases('database')
 
             conversation_manager = ConversationManager()
-
+            
             # Get Claude response
-            response = get_claude_response(user_message, multi_db, conversation_manager, conversation_history)
+            response = get_claude_response(user_message, multi_db, conversation_manager)
 
             # Stream the response
-            def response_generator():
-                for word in response.split():
-                    yield word + ' '
-                    time.sleep(0.05)  # Adjust delay as needed
-
-            return StreamingHttpResponse(response_generator(), content_type='text/plain')
+            return StreamingHttpResponse(generate_streamed_response(response), content_type='text/plain')
 
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
+
