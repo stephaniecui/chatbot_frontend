@@ -250,10 +250,9 @@ def chatbot_response(request):
             multi_db = MultiDB(user_profile)
             multi_db.load_databases('database')
 
+            conversation_manager = ConversationManager()
             if 'conversation_manager' in request.session:
-                conversation_manager = pickle.loads(request.session['conversation_manager'])
-            else:
-                conversation_manager = ConversationManager()
+                conversation_manager.memory = request.session['conversation_manager']
             
             # Get Claude response
             response = get_claude_response(user_message, multi_db, conversation_manager)
