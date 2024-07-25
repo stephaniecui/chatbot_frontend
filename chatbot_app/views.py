@@ -253,6 +253,9 @@ def chatbot_response(request):
 
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': 'An unexpected error occurred'}, status=500)
+            
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
 
