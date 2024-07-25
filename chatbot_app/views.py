@@ -1,6 +1,5 @@
 import os
 import json
-import logging
 import time
 from typing import List, Dict, Any
 import numpy as np
@@ -196,24 +195,30 @@ def get_claude_response(prompt, multi_db, conversation_manager, is_new_conversat
     context = conversation_manager.get_context()
 
     try:
-        messages = [
-            *conversation_history,
-            {"role": "user", "content": f"{formatted_info}\n\nConversation context:\n{context}\n\nUser's new question: {prompt}"}
-        ]
-        
         message = client.messages.create(
+            # Currently using Claude's best model, efficient and powerful
             model="claude-3-5-sonnet-20240620",
             max_tokens=1000,
             system=SYSTEM_PROMPT,
-            messages=messages
+            messages=[
+                {"role": "user", "content": f"{formatted_info}\n\nConversation context:\n{context}\n\nUser's new question: {prompt}"}
+            ]
         )
-        
         response = message.content[0].text
         conversation_manager.update(prompt, response)
         return response
     except Exception as e:
-        logging.error(f"Error getting Claude response: {e}")
         return f"An error occurred: {str(e)}"
+    
+
+def generate_streamed_response(response):
+    paragraphs = response.split('\n')
+    for paragraph in paragraphs:
+        words = paragraph.split()
+        for word in words
+            yield word + ' '
+            time.sleep(0.1)  # Adjust the delay as needed
+        yield '\n\n'  # Add a new paragraph
 
 def index(request):
     # Clear the session data each time the page is loaded
@@ -226,17 +231,17 @@ def chatbot_response(request):
         try:
             data = json.loads(request.body.decode('utf-8'))
             user_message = data.get('message', '')
-            logging.debug(f"Received message: {user_message}")
+            print(f"DEBUG: Received message: {user_message}")
 
             if 'user_profile' not in request.session:
                 # First interaction: prompt for level of study
                 if not user_message:
-                    return JsonResponse({'response': "What is your level of study? (ug for undergraduate, pgt for masters, pgr for PhD):"}, status=200)
+                    return StreamingHttpResponse(generate_streamed_response("What is your level of study? (ug for undergraduate, pgt for masters, pgr for PhD): "), content_type='text/plain')
                 else:
                     # Save user profile in session
                     request.session['user_profile'] = {"level": user_message}
                     request.session.modified = True
-                    return JsonResponse({'response': ["Thank you. Is there anything you would like to ask me today?"]}, status=200)
+                    return StreamingHttpResponse(generate_streamed_response(f"Thank you. Now you can ask your questions."), content_type='text/plain')
             
             user_profile = request.session['user_profile']
             
@@ -254,14 +259,10 @@ def chatbot_response(request):
             request.session['conversation_manager'] = conversation_manager.get_context()
             request.session.modified = True
 
-            return JsonResponse({'response': response}, status=200)
+            # Stream the response
+            return StreamingHttpResponse(generate_streamed_response(response), content_type='text/plain')
 
         except json.JSONDecodeError:
-            logging.error('Invalid JSON received')
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
-        except Exception as e:
-            logging.error(f"Unexpected error: {e}")
-            return JsonResponse({'error': 'An unexpected error occurred'}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
-  
