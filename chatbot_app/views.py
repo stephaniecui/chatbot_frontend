@@ -237,7 +237,7 @@ def chatbot_response(request):
                     # Save user profile in session
                     request.session['user_profile'] = {"level": user_message}
                     request.session.modified = True
-                    return JsonResponse({'chunks': ["Thank you. Now you can ask your questions."]}, status=200)
+                    return JsonResponse({'response': ["Thank you. Now you can ask your questions."]}, status=200)
             
             user_profile = request.session['user_profile']
             
@@ -254,9 +254,6 @@ def chatbot_response(request):
 
             request.session['conversation_manager'] = conversation_manager.get_context()
             request.session.modified = True
-
-            # Split response into chunks
-            chunks = [response[i:i+200] for i in range(0, len(response), 200)]
 
             return JsonResponse({'chunks': chunks}, status=200)
 
