@@ -1,5 +1,6 @@
 import os
 import json
+import logging
 import time
 from typing import List, Dict, Any
 import numpy as np
@@ -225,7 +226,7 @@ def chatbot_response(request):
         try:
             data = json.loads(request.body.decode('utf-8'))
             user_message = data.get('message', '')
-            print(f"DEBUG: Received message: {user_message}")
+            logging.debug(f"Received message: {user_message}")
 
             if 'user_profile' not in request.session:
                 # First interaction: prompt for level of study
@@ -248,7 +249,7 @@ def chatbot_response(request):
                 conversation_manager.memory = request.session['conversation_manager']
             
             # Get Claude response
-            response = get_claude_response(user_message, multi_db, conversation_manager, [])
+            response = get_claude_response(user_message, multi_db, conversation_manager)
 
             request.session['conversation_manager'] = conversation_manager.get_context()
             request.session.modified = True
@@ -256,11 +257,11 @@ def chatbot_response(request):
             return JsonResponse({'response': response}, status=200)
 
         except json.JSONDecodeError:
+            logging.error('Invalid JSON received')
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except Exception as e:
+            logging.error(f"Unexpected error: {e}")
             return JsonResponse({'error': 'An unexpected error occurred'}, status=500)
-            
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
-
   
