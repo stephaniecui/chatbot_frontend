@@ -195,19 +195,23 @@ def get_claude_response(prompt, multi_db, conversation_manager, is_new_conversat
     context = conversation_manager.get_context()
 
     try:
+        messages = [
+            *conversation_history,
+            {"role": "user", "content": f"{formatted_info}\n\nConversation context:\n{context}\n\nUser's new question: {prompt}"}
+        ]
+        
         message = client.messages.create(
-            # Currently using Claude's best model, efficient and powerful
             model="claude-3-5-sonnet-20240620",
             max_tokens=1000,
             system=SYSTEM_PROMPT,
-            messages=[
-                {"role": "user", "content": f"{formatted_info}\n\nConversation context:\n{context}\n\nUser's new question: {prompt}"}
-            ]
+            messages=messages
         )
+        
         response = message.content[0].text
         conversation_manager.update(prompt, response)
         return response
     except Exception as e:
+        logging.error(f"Error getting Claude response: {e}")
         return f"An error occurred: {str(e)}"
 
 def index(request):
