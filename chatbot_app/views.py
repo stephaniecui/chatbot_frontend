@@ -241,7 +241,7 @@ def chatbot_response(request):
                     # Save user profile in session
                     request.session['user_profile'] = {"level": user_message}
                     request.session.modified = True
-                    return StreamingHttpResponse(generate_streamed_response(f"Thank you. Now you can ask your questions."), content_type='text/plain')
+                    return StreamingHttpResponse(generate_streamed_response(f"Thank you. How may Impy help you today?"), content_type='text/plain')
             
             user_profile = request.session['user_profile']
             
