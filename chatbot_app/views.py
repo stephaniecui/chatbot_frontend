@@ -209,12 +209,6 @@ def get_claude_response(prompt, multi_db, conversation_manager, is_new_conversat
         return response
     except Exception as e:
         return f"An error occurred: {str(e)}"
-    
-def generate_streamed_response(response):
-    # Split the response into chunks (e.g., sentences or paragraphs)
-    chunks = response.split('. ')
-    for chunk in chunks:
-        yield chunk + '. '
 
 def index(request):
     # Clear the session data each time the page is loaded
@@ -255,7 +249,7 @@ def chatbot_response(request):
             request.session['conversation_manager'] = conversation_manager.get_context()
             request.session.modified = True
 
-            return JsonResponse({'chunks': chunks}, status=200)
+            return JsonResponse({'response': response}, status=200)
 
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
