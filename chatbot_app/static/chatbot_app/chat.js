@@ -42,17 +42,14 @@ async function sendMessage() {
             body: JSON.stringify({ message: userInput })
         });
 
-        if (response.body) {
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let result = '';
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                result += decoder.decode(value, { stream: true });
-                botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(result);
-                scrollToBottom();
-            }
+        if (response.ok) {
+            const data = await response.json();
+            const fullResponse = data.response;
+            botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
+            updateConversationHistory(userInput, fullResponse.trim());
+        } else {
+            console.error('Error:', response.statusText);
+            botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
         }
     } catch (error) {
         console.error('Error:', error);
@@ -89,20 +86,13 @@ window.onload = async function() {
             body: JSON.stringify({ message: '' }) // Initial empty message to trigger the prompt
         });
 
-        if (response.body) {
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let result = '';
-           while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                
-                const chunk = decoder.decode(value);
-                fullResponse += chunk;
-                botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
-                scrollToBottom();
-            }
-            updateConversationHistory(userInput, fullResponse.trim());
+        if (response.ok) {
+            const data = await response.json();
+            const fullResponse = data.response;
+            botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
+        } else {
+            console.error('Error:', response.statusText);
+            botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
         }
     } catch (error) {
         console.error('Error:', error);
