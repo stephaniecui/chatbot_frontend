@@ -210,15 +210,11 @@ def get_claude_response(prompt, multi_db, conversation_manager, is_new_conversat
     except Exception as e:
         return f"An error occurred: {str(e)}"
     
-
 def generate_streamed_response(response):
-    paragraphs = response.split('\n')
-    for paragraph in paragraphs:
-        words = paragraph.split()
-        for word in words:
-            yield word + ' '
-            time.sleep(0.1)  # Adjust the delay as needed
-        yield '\n\n'  # Add a new paragraph
+    # Split the response into chunks (e.g., sentences or paragraphs)
+    chunks = response.split('. ')
+    for chunk in chunks:
+        yield chunk + '. '
 
 def index(request):
     # Clear the session data each time the page is loaded
