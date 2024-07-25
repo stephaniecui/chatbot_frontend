@@ -232,7 +232,7 @@ def chatbot_response(request):
             if 'user_profile' not in request.session:
                 # First interaction: prompt for level of study
                 if not user_message:
-                    return JsonResponse({'chunks': ["What is your level of study? (ug for undergraduate, pgt for masters, pgr for PhD):"]}, status=200)
+                    return JsonResponse({'response': "What is your level of study? (ug for undergraduate, pgt for masters, pgr for PhD):"}, status=200)
                 else:
                     # Save user profile in session
                     request.session['user_profile'] = {"level": user_message}
