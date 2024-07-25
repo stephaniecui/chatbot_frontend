@@ -232,12 +232,12 @@ def chatbot_response(request):
             if 'user_profile' not in request.session:
                 # First interaction: prompt for level of study
                 if not user_message:
-                    return StreamingHttpResponse(generate_streamed_response("What is your level of study? (ug for undergraduate, pgt for masters, pgr for PhD): "), content_type='text/plain')
+                    return JsonResponse({'chunks': ["What is your level of study? (ug for undergraduate, pgt for masters, pgr for PhD):"]}, status=200)
                 else:
                     # Save user profile in session
                     request.session['user_profile'] = {"level": user_message}
                     request.session.modified = True
-                    return StreamingHttpResponse(generate_streamed_response(f"Thank you. Now you can ask your questions."), content_type='text/plain')
+                    return JsonResponse({'chunks': ["Thank you. Now you can ask your questions."]}, status=200)
             
             user_profile = request.session['user_profile']
             
@@ -255,8 +255,10 @@ def chatbot_response(request):
             request.session['conversation_manager'] = conversation_manager.get_context()
             request.session.modified = True
 
-            # Stream the response
-            return StreamingHttpResponse(generate_streamed_response(response), content_type='text/plain')
+            # Split response into chunks
+            chunks = [response[i:i+200] for i in range(0, len(response), 200)]
+
+            return JsonResponse({'chunks': chunks}, status=200)
 
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
