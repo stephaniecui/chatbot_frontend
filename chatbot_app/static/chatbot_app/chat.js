@@ -16,15 +16,12 @@ function getCookie(name) {
 
 function formatResponse(response) {
     let formattedResponse = response.replace(/\n/g, '<br>');
-    
-    formattedResponse = formattedResponse.replace(/<br><br>/g, '</p><p>');
-    
+    formattedResponse = formattedResponse.replace(/<br><br>/g, '</p><p>'); 
     formattedResponse = '<p>' + formattedResponse + '</p>';
-    
     return formattedResponse;
 }
         
-async function sendMessage() {
+function sendMessage() {
     const userInput = document.getElementById('user-input').value;
     if (userInput.trim() === '') return;
     
@@ -33,7 +30,7 @@ async function sendMessage() {
     const botMessageElement = appendMessage('bot', '');
     
     try {
-        const response = await fetch('/chatbot/chat/', {
+        fetch('/chatbot/chat/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -42,19 +39,23 @@ async function sendMessage() {
             body: JSON.stringify({ message: userInput })
         });
 
-        if (response.ok) {
-            const data = await response.json();
-            const fullResponse = data.response;
-            botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
-        } else {
-            console.error('Error:', response.statusText);
-            botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
+        .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
         }
-    } catch (error) {
-        console.error('Error:', error);
+        return response.json();
+    })
+    .then(data => {
+        const fullResponse = data.response;
+        botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
         botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
-    }
-    scrollToBottom();
+    })
+    .finally(() => {
+        scrollToBottom();
+    });
 }
 
 function appendMessage(sender, message) {
@@ -73,31 +74,34 @@ function scrollToBottom() {
 }
 
 // Automatically prompt the user for their level of study on page load
-window.onload = async function() {
+window.onload = function() {
     const botMessageElement = appendMessage('bot', '');
-    try {
-        const response = await fetch('/chatbot/chat/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken'),
-            },
-            body: JSON.stringify({ message: '' }) // Initial empty message to trigger the prompt
-        });
+    fetch('/chatbot/chat/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify({ message: '' }) // Initial empty message to trigger the prompt
+    })
 
-        if (response.ok) {
-            const data = await response.json();
-            const fullResponse = data.response;
-            botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
-        } else {
-            console.error('Error:', response.statusText);
-            botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
         }
-    } catch (error) {
-        console.error('Error:', error);
+        return response.json();
+    })
+    .then(data => {
+        const fullResponse = data.response;
+        botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
         botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
-    }
-    scrollToBottom();
+    })
+    .finally(() => {
+        scrollToBottom();
+    });
 }
 
 // Ensure the send button event listener is properly set
