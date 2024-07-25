@@ -215,7 +215,7 @@ def generate_streamed_response(response):
     paragraphs = response.split('\n')
     for paragraph in paragraphs:
         words = paragraph.split()
-        for word in words
+        for word in words:
             yield word + ' '
             time.sleep(0.1)  # Adjust the delay as needed
         yield '\n\n'  # Add a new paragraph
