@@ -1,4 +1,3 @@
-
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -16,12 +15,15 @@ function getCookie(name) {
 
 function formatResponse(response) {
     let formattedResponse = response.replace(/\n/g, '<br>');
-    formattedResponse = formattedResponse.replace(/<br><br>/g, '</p><p>'); 
+    
+    formattedResponse = formattedResponse.replace(/<br><br>/g, '</p><p>');
+    
     formattedResponse = '<p>' + formattedResponse + '</p>';
+    
     return formattedResponse;
 }
         
-function sendMessage() {
+async function sendMessage() {
     const userInput = document.getElementById('user-input').value;
     if (userInput.trim() === '') return;
     
@@ -39,18 +41,22 @@ function sendMessage() {
             body: JSON.stringify({ message: userInput })
         });
 
-        if (response.ok) {
-            const data = await response.json();
-            const fullResponse = data.response;
-            botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
-        } else {
-            console.error('Error:', response.statusText);
-            botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
+        if (response.body) {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let result = '';
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                result += decoder.decode(value, { stream: true });
+                botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(result);
+                scrollToBottom();
+            }
         }
     } catch (error) {
         console.error('Error:', error);
         botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
-    }
+    }ƒs
     scrollToBottom();
 }
 
@@ -82,13 +88,17 @@ window.onload = async function() {
             body: JSON.stringify({ message: '' }) // Initial empty message to trigger the prompt
         });
 
-        if (response.ok) {
-            const data = await response.json();
-            const fullResponse = data.response;
-            botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
-        } else {
-            console.error('Error:', response.statusText);
-            botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
+        if (response.body) {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let result = '';
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                result += decoder.decode(value, { stream: true });
+                botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(result);
+                scrollToBottom();
+            }
         }
     } catch (error) {
         console.error('Error:', error);
