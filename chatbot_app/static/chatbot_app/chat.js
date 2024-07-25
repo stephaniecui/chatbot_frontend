@@ -42,19 +42,22 @@ async function sendMessage() {
             body: JSON.stringify({ message: userInput })
         });
 
-        if (response.ok) {
-            const data = await response.json();
-            const fullResponse = data.response;
-            botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
-            updateConversationHistory(userInput, fullResponse.trim());
-        } else {
-            console.error('Error:', response.statusText);
-            botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
+        if (response.body) {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let result = '';
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                result += decoder.decode(value, { stream: true });
+                botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(result);
+                scrollToBottom();
+            }
         }
     } catch (error) {
         console.error('Error:', error);
         botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
-    }
+    }ƒs
     scrollToBottom();
 }
 
