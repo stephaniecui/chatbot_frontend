@@ -30,7 +30,7 @@ function sendMessage() {
     const botMessageElement = appendMessage('bot', '');
     
     try {
-        fetch('/chatbot/chat/', {
+        const response = await fetch('/chatbot/chat/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -39,23 +39,19 @@ function sendMessage() {
             body: JSON.stringify({ message: userInput })
         });
 
-        .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
+        if (response.ok) {
+            const data = await response.json();
+            const fullResponse = data.response;
+            botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
+        } else {
+            console.error('Error:', response.statusText);
+            botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
         }
-        return response.json();
-    })
-    .then(data => {
-        const fullResponse = data.response;
-        botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
-    })
-    .catch(error => {
-        console.error('Fetch error:', error);
+    } catch (error) {
+        console.error('Error:', error);
         botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
-    })
-    .finally(() => {
-        scrollToBottom();
-    });
+    }
+    scrollToBottom();
 }
 
 function appendMessage(sender, message) {
@@ -74,34 +70,31 @@ function scrollToBottom() {
 }
 
 // Automatically prompt the user for their level of study on page load
-window.onload = function() {
+window.onload = async function() {
     const botMessageElement = appendMessage('bot', '');
-    fetch('/chatbot/chat/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken'),
-        },
-        body: JSON.stringify({ message: '' }) // Initial empty message to trigger the prompt
-    })
+    try {
+        const response = await fetch('/chatbot/chat/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: JSON.stringify({ message: '' }) // Initial empty message to trigger the prompt
+        });
 
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
+        if (response.ok) {
+            const data = await response.json();
+            const fullResponse = data.response;
+            botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
+        } else {
+            console.error('Error:', response.statusText);
+            botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
         }
-        return response.json();
-    })
-    .then(data => {
-        const fullResponse = data.response;
-        botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
-    })
-    .catch(error => {
-        console.error('Fetch error:', error);
+    } catch (error) {
+        console.error('Error:', error);
         botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
-    })
-    .finally(() => {
-        scrollToBottom();
-    });
+    }
+    scrollToBottom();
 }
 
 // Ensure the send button event listener is properly set
