@@ -231,7 +231,7 @@ def chatbot_response(request):
                     # Save user profile in session
                     request.session['user_profile'] = {"level": user_message}
                     request.session.modified = True
-                    return JsonResponse({'response': ["Thank you. Now you can ask your questions."]}, status=200)
+                    return JsonResponse({'response': ["Thank you. Is there anything you would like to ask me today?"]}, status=200)
             
             user_profile = request.session['user_profile']
             
