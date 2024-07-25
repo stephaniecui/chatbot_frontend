@@ -93,13 +93,16 @@ window.onload = async function() {
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             let result = '';
-            while (true) {
+           while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
-                result += decoder.decode(value, { stream: true });
-                botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(result);
+                
+                const chunk = decoder.decode(value);
+                fullResponse += chunk;
+                botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(fullResponse);
                 scrollToBottom();
             }
+            updateConversationHistory(userInput, fullResponse.trim());
         }
     } catch (error) {
         console.error('Error:', error);
