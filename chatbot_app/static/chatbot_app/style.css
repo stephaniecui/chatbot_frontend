@@ -55,14 +55,14 @@ body {
 .chat-input {
     display: flex;
     padding: 10px;
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     border-top: 1px solid var(--primary-color);
 }
 
 #user-input {
     flex: 1;
     padding: 10px;
-    border: 1px solid var(--secondary-color);
+    border: 1px solid var(--primary-color);
     border-radius: 5px;
 }
 
