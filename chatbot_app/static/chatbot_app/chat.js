@@ -103,7 +103,6 @@ function scrollToBottom() {
 
 // Automatically prompt the user for their level of study on page load
 window.onload = async function() {
-    localStorage.removeItem('conversationContext');
     const botMessageElement = appendMessage('bot', '');
     try {
         const response = await fetch('/chatbot/chat/', {
