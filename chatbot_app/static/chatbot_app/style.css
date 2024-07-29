@@ -16,7 +16,7 @@
 
 :root {
     --primary-color: #002395;  /* Imperial Blue */
-    --secondary-color: #003E74;  /* Darker Imperial Blue */
+    --secondary-color: #4f78ff;  /* Lighter Imperial Blue */
     --accent-color: #FFD100;  /* Imperial Yellow */
     --background-color: #FFFFFF;  /* White */
     --text-color: #000000;  /* Black */
@@ -34,7 +34,6 @@ body {
     flex-direction: column;
     height: 100vh;
 }
-
 .chat-header {
     background-color: var(--primary-color);
     color: var(--background-color);
@@ -131,8 +130,5 @@ body {
 
 .message-bubble p:last-child {
     margin-bottom: 0;
-}
-.impy-text {
-    text-transform: capitalize;
 }
 
