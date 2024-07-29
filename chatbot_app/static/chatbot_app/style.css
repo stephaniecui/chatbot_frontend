@@ -14,6 +14,13 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'ImperialSansDisplay';
+    src: url('fonts/ImperialSansDisplay-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 :root {
     --primary-color: #002395;  /* Imperial Blue */
     --secondary-color: #4f78ff;  /* Lighter Imperial Blue */
@@ -26,7 +33,7 @@
 body {
     background-color: var(--background-color);
     color: var(--text-color);
-    font-family: 'ImperialFont', sans-serif;
+    font-family: 'ImperialSansDisplay', sans-serif;
 }
 
 .chat-container {
