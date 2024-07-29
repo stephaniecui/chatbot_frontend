@@ -23,12 +23,17 @@ function formatResponse(response) {
     return formattedResponse;
 }
         
-async function sendMessage() {
-    const userInput = document.getElementById('user-input').value;
-    if (userInput.trim() === '') return;
+async function sendMessage(isRegenerate = false, messageToRegenerate = null) {
+    let userInput;
+    if (isRegenerate) {
+        userInput = messageToRegenerate;
+    } else {
+        userInput = document.getElementById('user-input').value;
+        if (userInput.trim() === '') return;
+        appendMessage('user', userInput);
+        document.getElementById('user-input').value = '';
+    }
     
-    appendMessage('user', userInput);
-    document.getElementById('user-input').value = '';
     const botMessageElement = appendMessage('bot', '');
     
     try {
@@ -38,7 +43,7 @@ async function sendMessage() {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken'),
             },
-            body: JSON.stringify({ message: userInput })
+            body: JSON.stringify({ message: userInput, is_regenerate: isRegenerate })
         });
 
         if (response.body) {
@@ -53,10 +58,15 @@ async function sendMessage() {
                 scrollToBottom();
             }
         }
+        
+        // Add regenerate button after the response is complete
+        if (!isRegenerate) {
+            addRegenerateButton(botMessageElement, userInput);
+        }
     } catch (error) {
         console.error('Error:', error);
         botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
-    }ƒs
+    }
     scrollToBottom();
 }
 
@@ -68,6 +78,19 @@ function appendMessage(sender, message) {
     chatBox.appendChild(messageElement);
     scrollToBottom();
     return messageElement;
+}
+
+function addRegenerateButton(messageElement, originalMessage) {
+    const regenerateButton = document.createElement('button');
+    regenerateButton.textContent = 'Regenerate';
+    regenerateButton.classList.add('regenerate-button');
+    regenerateButton.addEventListener('click', () => {
+        // Remove the old message and regenerate button
+        messageElement.remove();
+        // Call sendMessage with isRegenerate flag
+        sendMessage(true, originalMessage);
+    });
+    messageElement.appendChild(regenerateButton);
 }
 
 function scrollToBottom() {
