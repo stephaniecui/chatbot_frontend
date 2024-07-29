@@ -45,8 +45,7 @@ async function sendMessage(isRegenerate = false, messageToRegenerate = null) {
             },
             body: JSON.stringify({ 
                 message: userInput, 
-                is_regenerate: isRegenerate,
-                conversation_context: localStorage.getItem('conversationContext') || ''
+                is_regenerate: isRegenerate
             })
         });
 
@@ -61,9 +60,6 @@ async function sendMessage(isRegenerate = false, messageToRegenerate = null) {
                 botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(result);
                 scrollToBottom();
             }
-            
-            // Store the updated conversation context
-            localStorage.setItem('conversationContext', result);
         }
         
          // Add regenerate button after the response is complete
