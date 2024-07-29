@@ -107,6 +107,7 @@ function scrollToBottom() {
 
 // Automatically prompt the user for their level of study on page load
 window.onload = async function() {
+    localStorage.removeItem('conversationContext');
     const botMessageElement = appendMessage('bot', '');
     try {
         const response = await fetch('/chatbot/chat/', {
@@ -147,7 +148,3 @@ document.getElementById('user-input').addEventListener('keypress', function (e) 
         e.preventDefault(); // Prevent newline in the textarea
     }
 });
-
-// Clear conversation context when the page loads
-window.onload = function() {
-    localStorage.removeItem('conversationContext');
