@@ -15,7 +15,7 @@
 }
 
 :root {
-    --primary-color: #002147;  /* Imperial Blue */
+    --primary-color: #002395;  /* Imperial Blue */
     --secondary-color: #003E74;  /* Darker Imperial Blue */
     --accent-color: #FFD100;  /* Imperial Yellow */
     --background-color: #FFFFFF;  /* White */
@@ -132,3 +132,7 @@ body {
 .message-bubble p:last-child {
     margin-bottom: 0;
 }
+.impy-text {
+    text-transform: capitalize;
+}
+
