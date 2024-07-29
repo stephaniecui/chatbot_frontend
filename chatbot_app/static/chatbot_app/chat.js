@@ -43,7 +43,11 @@ async function sendMessage(isRegenerate = false, messageToRegenerate = null) {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken'),
             },
-            body: JSON.stringify({ message: userInput, is_regenerate: isRegenerate })
+            body: JSON.stringify({ 
+                message: userInput, 
+                is_regenerate: isRegenerate,
+                conversation_context: localStorage.getItem('conversationContext') || ''
+            })
         });
 
         if (response.body) {
@@ -57,9 +61,12 @@ async function sendMessage(isRegenerate = false, messageToRegenerate = null) {
                 botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(result);
                 scrollToBottom();
             }
+            
+            // Store the updated conversation context
+            localStorage.setItem('conversationContext', result);
         }
         
-        // Add regenerate button after the response is complete
+         // Add regenerate button after the response is complete
         if (!isRegenerate) {
             addRegenerateButton(botMessageElement, userInput);
         }
@@ -87,7 +94,7 @@ function addRegenerateButton(messageElement, originalMessage) {
     regenerateButton.addEventListener('click', () => {
         // Remove the old message and regenerate button
         messageElement.remove();
-        // Call sendMessage with isRegenerate flag
+        // Call sendMessage with isRegenerate flag and original message
         sendMessage(true, originalMessage);
     });
     messageElement.appendChild(regenerateButton);
@@ -98,6 +105,9 @@ function scrollToBottom() {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+// Clear conversation context when the page loads
+window.onload = function() {
+    localStorage.removeItem('conversationContext');
 // Automatically prompt the user for their level of study on page load
 window.onload = async function() {
     const botMessageElement = appendMessage('bot', '');
