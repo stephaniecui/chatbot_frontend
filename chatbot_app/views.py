@@ -207,9 +207,9 @@ def get_claude_response(prompt, multi_db, conversation_manager, is_regenerate=Fa
         )
         response = message.content[0].text
         response = format_hyperlinks(response)
-        
-        if not is_regenerate:
-            conversation_manager.update(prompt, response)
+
+        # Always update the conversation manager
+        conversation_manager.update(prompt, response)
         
         return response
     except Exception as e:
@@ -242,7 +242,8 @@ def chatbot_response(request):
             data = json.loads(request.body.decode('utf-8'))
             user_message = data.get('message', '')
             is_regenerate = data.get('is_regenerate', False)
-            print(f"DEBUG: Received message: {user_message}, Regenerate: {is_regenerate}")
+            conversation_context = data.get('conversation_context', '')
+            print(f"DEBUG: Received message: {user_message}, Regenerate: {is_regenerate}, Context: {conversation_context}")
 
             if 'user_profile' not in request.session:
                 # First interaction: prompt for level of study
@@ -261,8 +262,7 @@ def chatbot_response(request):
             multi_db.load_databases('database')
 
             conversation_manager = ConversationManager()
-            if 'conversation_manager' in request.session:
-                conversation_manager.memory = request.session['conversation_manager']
+            conversation_manager.memory = conversation_context
             
             # Get Claude response
             if is_regenerate:
