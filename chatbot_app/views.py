@@ -195,7 +195,7 @@ def get_claude_response(prompt, multi_db, conversation_manager, is_regenerate=Fa
     context = conversation_manager.get_context()
 
     try:
-        regenerate_instruction = "Please provide a different response to the user's question." if is_regenerate else ""
+        regenerate_instruction = "Please provide a different response to the user's question. Approach the question from a different angle." if is_regenerate else ""
         
         message = client.messages.create(
             model="claude-3-5-sonnet-20240620",
@@ -242,7 +242,6 @@ def chatbot_response(request):
             data = json.loads(request.body.decode('utf-8'))
             user_message = data.get('message', '')
             is_regenerate = data.get('is_regenerate', False)
-            conversation_context = data.get('conversation_context', '')
             print(f"DEBUG: Received message: {user_message}, Regenerate: {is_regenerate}, Context: {conversation_context}")
 
             if 'user_profile' not in request.session:
@@ -262,19 +261,15 @@ def chatbot_response(request):
             multi_db.load_databases('database')
 
             conversation_manager = ConversationManager()
-            conversation_manager.memory = conversation_context
+            if 'conversation_manager' in request.session:
+                conversation_manager.memory = request.session['conversation_manager']
             
             # Get Claude response
-            if is_regenerate:
-                # Use the last user message from the conversation manager
-                user_message = conversation_manager.current_exchange["user"]
-            
             response = get_claude_response(user_message, multi_db, conversation_manager, is_regenerate=is_regenerate)
 
-            if not is_regenerate:
-                # Only update the conversation manager if it's not a regeneration request
-                request.session['conversation_manager'] = conversation_manager.get_context()
-                request.session.modified = True
+            # Always update the conversation manager
+            request.session['conversation_manager'] = conversation_manager.get_context()
+            request.session.modified = True
 
             # Stream the response
             return StreamingHttpResponse(generate_streamed_response(response), content_type='text/plain')
