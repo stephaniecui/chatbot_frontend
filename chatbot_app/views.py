@@ -249,7 +249,7 @@ def chatbot_response(request):
             data = json.loads(request.body.decode('utf-8'))
             user_message = data.get('message', '')
             is_regenerate = data.get('is_regenerate', False)
-            print(f"DEBUG: Received message: {user_message}, Regenerate: {is_regenerate}, Context: {conversation_context}")
+            print(f"DEBUG: Received message: {user_message}, Regenerate: {is_regenerate}")
 
             if 'user_profile' not in request.session:
                 # First interaction: prompt for level of study
