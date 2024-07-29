@@ -43,6 +43,20 @@
     background-color: #0056b3;
 }
 
+.regenerate-button {
+    padding: 10px 20px;
+    margin-top: 10px; /* Adjust margin as needed */
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.regenerate-button:hover {
+    background-color: #0056b3;
+}
+
 .message {
     max-width: 70%;
     margin-bottom: 15px;
