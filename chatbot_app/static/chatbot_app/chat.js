@@ -134,7 +134,7 @@ window.onload = async function() {
 }
 
 // Ensure the send button event listener is properly set
-document.getElementById('send-button').addEventListener('click', sendMessage);
+document.getElementById('send-button').addEventListener('click', () => sendMessage(false, null));
 
 // Handle "Enter" key press for better user experience
 document.getElementById('user-input').addEventListener('keypress', function (e) {
