@@ -195,7 +195,14 @@ def get_claude_response(prompt, multi_db, conversation_manager, is_regenerate=Fa
     context = conversation_manager.get_context()
 
     try:
-        regenerate_instruction = "Please provide a different response to the user's question. Approach the question from a different angle." if is_regenerate else ""
+        regenerate_instruction = """
+        The user has requested a different answer to their previous question. 
+        They were not satisfied with the initial response. 
+        Please generate a new, alternative answer to the same question. 
+        Provide different information, a new perspective, or elaborate on aspects 
+        not covered in the initial response. Ensure this new answer is distinct 
+        from the previous one while still accurately addressing the user's question.
+        """ if is_regenerate else ""
         
         message = client.messages.create(
             model="claude-3-5-sonnet-20240620",
