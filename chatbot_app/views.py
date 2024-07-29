@@ -175,7 +175,7 @@ Summary:"""
 
 # Claude time #
 
-def get_claude_response(prompt, multi_db, conversation_manager, is_new_conversation=False):
+def get_claude_response(prompt, multi_db, conversation_manager, is_regenerate=False):
     # Helps find the relevant stuff based on the prompt
     result = multi_db.analyze_and_search(prompt)
     db_name, relevant_info = result[0], result[1]
@@ -195,18 +195,22 @@ def get_claude_response(prompt, multi_db, conversation_manager, is_new_conversat
     context = conversation_manager.get_context()
 
     try:
+        regenerate_instruction = "Please provide a different response to the user's question." if is_regenerate else ""
+        
         message = client.messages.create(
-            # Currently using Claude's best model, efficient and powerful
             model="claude-3-5-sonnet-20240620",
             max_tokens=1000,
             system=SYSTEM_PROMPT,
             messages=[
-                {"role": "user", "content": f"{formatted_info}\n\nConversation context:\n{context}\n\nUser's new question: {prompt}"}
+                {"role": "user", "content": f"{formatted_info}\n\nConversation context:\n{context}\n\nUser's question: {prompt}\n\n{regenerate_instruction}"}
             ]
         )
         response = message.content[0].text
         response = format_hyperlinks(response)
-        conversation_manager.update(prompt, response)
+        
+        if not is_regenerate:
+            conversation_manager.update(prompt, response)
+        
         return response
     except Exception as e:
         return f"An error occurred: {str(e)}"
@@ -237,7 +241,8 @@ def chatbot_response(request):
         try:
             data = json.loads(request.body.decode('utf-8'))
             user_message = data.get('message', '')
-            print(f"DEBUG: Received message: {user_message}")
+            is_regenerate = data.get('is_regenerate', False)
+            print(f"DEBUG: Received message: {user_message}, Regenerate: {is_regenerate}")
 
             if 'user_profile' not in request.session:
                 # First interaction: prompt for level of study
@@ -260,10 +265,16 @@ def chatbot_response(request):
                 conversation_manager.memory = request.session['conversation_manager']
             
             # Get Claude response
-            response = get_claude_response(user_message, multi_db, conversation_manager)
+            if is_regenerate:
+                # Use the last user message from the conversation manager
+                user_message = conversation_manager.current_exchange["user"]
+            
+            response = get_claude_response(user_message, multi_db, conversation_manager, is_regenerate=is_regenerate)
 
-            request.session['conversation_manager'] = conversation_manager.get_context()
-            request.session.modified = True
+            if not is_regenerate:
+                # Only update the conversation manager if it's not a regeneration request
+                request.session['conversation_manager'] = conversation_manager.get_context()
+                request.session.modified = True
 
             # Stream the response
             return StreamingHttpResponse(generate_streamed_response(response), content_type='text/plain')
