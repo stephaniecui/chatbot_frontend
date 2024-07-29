@@ -62,8 +62,8 @@ body {
 .chat-input {
     display: flex;
     padding: 10px;
-    background-color: var(--primary-color);
-    border-top: 1px solid var(--primary-color);
+    background-color: var(--bot-message-color);
+    border-top: 1px solid var(--bot-message-color);
 }
 
 #user-input {
