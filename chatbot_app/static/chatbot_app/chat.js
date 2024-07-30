@@ -34,7 +34,7 @@ async function sendMessage(isRegenerate = false, messageToRegenerate = null) {
         document.getElementById('user-input').value = '';
     }
     
-    const botMessageElement = appendMessage('bot', 'Impy is thinking hard');
+    const botMessageElement = appendMessage('bot', 'Impy is thinking hard...');
     
     try {
         const response = await fetch('/chatbot/chat/', {
