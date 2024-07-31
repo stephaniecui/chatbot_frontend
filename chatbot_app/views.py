@@ -120,9 +120,6 @@ class MultiDB:
             else:
                 print(f"No {db_name} data found at {file_path}")
 
-        if debug:
-            print(f"Loaded databases: {', '.join(self.databases.keys())}")
-
     def add_database(self, name, file_path):
         try:
             with open(file_path, 'r') as f:
