@@ -39,13 +39,6 @@ If the user seems distressed, emphasize available help resources and offer empat
 
 Remember, your goal is to provide helpful, accurate, and context-appropriate responses to assist the Imperial College community."""
 
-# USER PROFILING #
-# This function is to ask the user for initial information on year and course.
-# If we have access to the year and course automatically via login this is where we would change the variable.
-def initialize_user_profile():
-    level = input("What is your level of study? (ug for undergraduate, pgt for masters, pgr for PhD): ")
-    return {"level": level}
-
 # DATA ZONE #
 class DataEntry:
     def __init__(self, content: str, metadata: Dict[str, Any]):
@@ -53,9 +46,9 @@ class DataEntry:
         self.metadata = metadata
 
 class VectorDB:
-    def __init__(self, name: str):
+    def __init__(self, name):
         self.name = name
-        self.data: List[DataEntry] = []
+        self.data = []
         self.vectorizer = TfidfVectorizer()
         self.index = None
 
@@ -72,52 +65,113 @@ class VectorDB:
         self.index = faiss.IndexIDMap(faiss.IndexFlatIP(tfidf_matrix.shape[1]))
         self.index.add_with_ids(tfidf_matrix.toarray().astype('float32'), np.array(range(len(texts))))
         
-    def search(self, query, k=5):
+    def search(self, query, k=3):
         full_query = f"{query} {' '.join(str(v) for v in self.data[0].metadata.keys())}"
         query_vector = self.vectorizer.transform([full_query]).toarray().astype('float32')
-        _, indices = self.index.search(query_vector, k)
-        return [self.data[i] for i in indices[0]]
+        scores, indices = self.index.search(query_vector, k)
+        results = [(self.data[i], score) for i, score in zip(indices[0], scores[0])]
+        return results
 
 class MultiDB:
-    def __init__(self, user_profile):
+    def __init__(self):
         self.databases = {}
-        self.user_profile = user_profile
         self.last_used_db = None
+        self.db_configs = {
+            'success_guide_ug': {
+                'keywords': ['success', 'guide', 'advice', 'undergraduate'],
+                'file_name': "success_guide_ug.json",
+                'weight_multiplier': 1.5
+            },
+            'success_guide_pgt': {
+                'keywords': ['success', 'guide', 'advice', 'taught postgraduate', 'masters', 'master'],
+                'file_name': "success_guide_pgt.json",
+                'weight_multiplier': 1.5
+            },
+            'success_guide_pgr': {
+                'keywords': ['success', 'guide', 'advice', 'research', 'PhD', 'research'],
+                'file_name': "success_guide_pgr.json",
+                'weight_multiplier': 1.5
+            },
+            'union': {
+                'keywords': ['club', 'clubs', 'society', 'societies', 'ECA', 'ECAs', 'extra-curricular', 'activities', 'activity'],
+                'file_name': "imperial_union_data.json",
+                'weight_multiplier': 1.5
+            },
+            'accommodation': {
+                'keywords': ['accommodation', 'housing', 'house', 'houses', 'accomodation'],
+                'file_name': "imperial_accommodation.json",
+                'weight_multiplier': 150
+            },
+            'food': {
+                'keywords': ['food', 'drink', 'eat', 'meal', 'coffee', 'tea'],
+                'file_name': "imperial_food.json",
+                'weight_multiplier': 50
+            },
+            # Add more database configurations here
+        }
 
     def load_databases(self, base_path):
-        # Ensure base_path is correct
-        base_path = os.path.join(settings.BASE_DIR, base_path)
+        base_path = os.path.join(os.path.dirname(__file__), base_path)
         
-        # Load success guide database based on user's level of study
-        level = self.user_profile['level']
-        success_guide_file = f"success_guide_{level}.json"
-        success_guide_path = os.path.join(base_path, success_guide_file)
-        
-        if os.path.exists(success_guide_path):
-            self.add_database('success_guide', success_guide_path)
-        else:   
-            print(f"No success guide found for {level} students")
+        for db_name, config in self.db_configs.items():
+            file_path = os.path.join(base_path, config['file_name'])
+            if os.path.exists(file_path):
+                self.add_database(db_name, file_path)
+            else:
+                print(f"No {db_name} data found at {file_path}")
 
-       # DEBUG: Print loaded databases for debugging
-        print(f"Loaded databases: {success_guide_file}")
-    
+        if debug:
+            print(f"Loaded databases: {', '.join(self.databases.keys())}")
+
     def add_database(self, name, file_path):
-        db = VectorDB(name)
-        with open(file_path, 'r') as f:
-            data = json.load(f)
-        entries = [DataEntry(item['content'], item.get('metadata', {})) for item in data]
-        db.add_entries(entries)
-        self.databases[name] = db
-       
-    def analyze_and_search(self, prompt, k=5):
-        # Always use the success guide database
-        db_name = 'success_guide'
+        try:
+            with open(file_path, 'r') as f:
+                data = json.load(f)
+            db = VectorDB(name)
+            entries = [DataEntry(item['content'], item.get('metadata', {})) for item in data]
+            db.add_entries(entries)
+            self.databases[name] = db
+        except FileNotFoundError:
+            print(f"Database file not found: {file_path}")
+        except json.JSONDecodeError:
+            print(f"Error decoding JSON in file: {file_path}")
+
+    def analyze_and_search(self, prompt, k=3):
+        prompt_words = set(prompt.lower().split())
+        all_results = []
         
-        if db_name in self.databases:
-            self.last_used_db = db_name
-            return db_name, self.databases[db_name].search(prompt, k)
-        else:
-            return None, []
+        for db_name, config in self.db_configs.items():
+            if db_name not in self.databases:
+                continue
+            
+            weight = config['weight_multiplier'] if any(keyword in prompt_words for keyword in config['keywords']) else 1.0
+            
+            results = self.databases[db_name].search(prompt, k=k)
+            
+            weighted_results = [(db_name, result, score * weight) for result, score in results]
+            all_results.extend(weighted_results)
+        
+        all_results.sort(key=lambda x: x[2], reverse=True)
+        
+        top_results = all_results[:k]
+        
+        formatted_results = [
+            (db_name, result, score) for db_name, result, score in top_results
+        ]
+        
+        return "all", formatted_results
+
+    def add_new_database(self, name, keywords, file_name, weight_multiplier=1.5):
+        self.db_configs[name] = {
+            'keywords': keywords,
+            'file_name': file_name,
+            'weight_multiplier': weight_multiplier
+        }
+        file_path = os.path.join(os.path.dirname(__file__), 'database', file_name)
+        self.add_database(name, file_path)
+
+    def reset_context(self):
+        self.last_used_db = None
 
 # CONVERSATION MANAGER #
 
