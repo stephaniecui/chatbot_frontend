@@ -191,6 +191,9 @@ class MultiDB:
             print(f"Error decoding JSON in file: {file_path}")
 
     def analyze_and_search(self, prompt, k=3):
+        if not self.databases:
+            return []
+        
         original_prompt_words = set(prompt.lower().split())
         preprocessed_prompt = self.databases[next(iter(self.databases))].preprocess_text(prompt)
         all_results = []
