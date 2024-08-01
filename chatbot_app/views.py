@@ -339,7 +339,8 @@ def get_api_response(prompt, multi_db, conversation_manager, format_hyperlinks=N
             )
             response_text = response.choices[0].message.content
 
-        response_text = format_hyperlinks(response_text)
+         if callable(format_hyperlinks):
+            response_text = format_hyperlinks(response_text)
 
         conversation_manager.update(prompt, response_text)
         return response_text
