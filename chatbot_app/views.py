@@ -334,10 +334,6 @@ def get_api_response(prompt, multi_db, conversation_manager, format_hyperlinks=N
     
     full_prompt = f"{formatted_info}\n\nConversation context:\n{context}\n\nUser's new question: {prompt}"
 
-    if debug:
-        print(f"DEBUG - extracted info: {formatted_info}")
-        print(f"DEBUG - Context used for API call: {context}")
-
     try:
         regenerate_instruction = """
         The user has requested a different answer to their previous question. 
