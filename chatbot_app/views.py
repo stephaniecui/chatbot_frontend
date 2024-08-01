@@ -14,6 +14,8 @@ from .models import ChatMessage
 import re
 import anthropic
 from openai import OpenAI
+import nltk  
+from nltk.corpus import stopwords
 
 # API clients
 claude_client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
