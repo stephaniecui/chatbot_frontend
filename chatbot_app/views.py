@@ -166,7 +166,7 @@ class MultiDB:
         }
 
     def load_databases(self, base_path):
-        base_path = os.path.join(os.path.dirname(__file__), base_path)
+        base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'database'))
         
         for db_name, config in self.db_configs.items():
             file_path = os.path.join(base_path, config['file_name'])
