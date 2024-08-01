@@ -40,16 +40,7 @@ When possible, provide relevant URLs, especially if you're unsure or the informa
 
 If the user seems distressed, emphasize available help resources and offer empathetic support.
 
-Remember, your goal is to provide helpful, accurate, and context-appropriate responses to assist the Imperial College community.
-
-When generating URLs, generate them in this format: "for more information please consult: URL"."""
-
-
-# # USER PROFILING #
-# # This function is to ask the user for initial information on level of study.
-# def initialize_user_profile():
-#     level = input("What is your level of study? (undergrad=ug, masters = pgt, PhD = pgr): ")
-#     return {"level": level}
+Remember, your goal is to provide helpful, accurate, and context-appropriate responses to assist the Imperial College community."""
 
 ### DATA ZONE ###
 
@@ -348,8 +339,7 @@ def get_api_response(prompt, multi_db, conversation_manager, format_hyperlinks=N
             )
             response_text = response.choices[0].message.content
 
-        if callable(format_hyperlinks):
-            response_text = format_hyperlinks(response_text)
+        response_text = format_hyperlinks(response_text)
 
         conversation_manager.update(prompt, response_text)
         return response_text
