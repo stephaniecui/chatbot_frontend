@@ -92,7 +92,7 @@ class VectorDB:
         self.name = name
         self.data = []
         nltk.download('stopwords', quiet=True)
-        self.stop_words = set(stopwords.words('english'))
+        self.stop_words = list(stopwords.words('english'))
         self.vectorizer = TfidfVectorizer(stop_words=self.stop_words)
         self.index = None
 
