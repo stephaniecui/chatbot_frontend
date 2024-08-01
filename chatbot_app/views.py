@@ -294,7 +294,7 @@ Summary:"""
     def get_context(self):
         return self.memory
 
-def get_api_response(prompt, multi_db, conversation_manager, format_hyperlinks, is_regenerate=False):
+def get_api_response(prompt, multi_db, conversation_manager, is_regenerate=False):
     result = multi_db.analyze_and_search(prompt)
     
     formatted_info = "Relevant information from multiple databases:\n"
@@ -357,8 +357,8 @@ def generate_streamed_response(response):
         yield '\n\n'  # Add a new paragraph
 
 def format_hyperlinks(text):
-    url_pattern = re.compile(r'(https?://[^\s]+)')
-    formatted_text = url_pattern.sub(r'<a href="\1" target="_blank">\1</a>', text)
+    url_pattern = re.compile(r'(https?://[^\s)]+)')
+    formatted_text = url_pattern.sub(r'<a href="\g<0>" target="_blank">\g<0></a>', text)
     return formatted_text
 
 def index(request):
