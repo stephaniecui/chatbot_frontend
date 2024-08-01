@@ -390,18 +390,12 @@ def chatbot_response(request):
                     return StreamingHttpResponse(generate_streamed_response("Invalid choice. Please enter 'A' for Claude or 'B' for OpenAI: "), content_type='text/plain')
                 
                 request.session.modified = True
-                return StreamingHttpResponse(generate_streamed_response(f"Type 'exit' to end the conversation or 'new' to start a new conversation. Hi, what would you like help on today?"), content_type='text/plain')
+                return StreamingHttpResponse(generate_streamed_response(f"Type 'exit' to end the conversation. Hi, what would you like help on today?"), content_type='text/plain')
 
             # Handle 'exit' command
             if user_input.lower() == 'exit':
                 request.session.flush()
                 return StreamingHttpResponse(generate_streamed_response("Thank you for chatting with Impy. Goodbye!"), content_type='text/plain')
-
-            # Handle 'new' command
-            if user_input.lower() == 'new':
-                request.session['is_new_conversation'] = True
-                request.session['api_choice'] = None
-                return StreamingHttpResponse(generate_streamed_response("Starting a new conversation. Which API would you like to use? (A for Claude, B for OpenAI): "), content_type='text/plain')
 
             # Process the user input
             api_choice = request.session['api_choice']
