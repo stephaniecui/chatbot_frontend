@@ -374,6 +374,25 @@ def get_api_response(prompt, multi_db, conversation_manager, format_hyperlinks=N
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
+def generate_streamed_response(response):
+    paragraphs = response.split('\n')
+    for paragraph in paragraphs:
+        words = paragraph.split()
+        for word in words:
+            yield word + ' '
+            time.sleep(0.025)  # Adjust the delay as needed
+        yield '\n\n'  # Add a new paragraph
+
+def format_hyperlinks(text):
+    url_pattern = re.compile(r'(https?://[^\s]+)')
+    formatted_text = url_pattern.sub(r'<a href="\1" target="_blank">\1</a>', text)
+    return formatted_text
+
+def index(request):
+    # Clear the session data each time the page is loaded
+    request.session.flush()
+    return render(request, 'chatbot_app/index.html')
+
 @csrf_exempt
 def chatbot_response(request):
     if request.method == 'POST':
