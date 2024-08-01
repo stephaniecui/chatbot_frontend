@@ -13,6 +13,7 @@ from django.conf import settings
 from .models import ChatMessage
 import re
 import anthropic
+from openai import OpenAI
 
 # API clients
 claude_client = anthropic.Anthropic(api_key='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')
