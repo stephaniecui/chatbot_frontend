@@ -378,7 +378,7 @@ def chatbot_response(request):
             if 'initialized' not in request.session:
                 request.session['initialized'] = True
                 request.session['is_new_conversation'] = True
-                return StreamingHttpResponse(generate_streamed_response("Welcome to Impy, your Imperial College London assistant! Which API would you like to use? (A for Claude, B for OpenAI): "), content_type='text/plain')
+                return StreamingHttpResponse(generate_streamed_response("Welcome to Impy, your Imperial College London assistant! Which API would you like to use? (A or B): "), content_type='text/plain')
 
             # Handle API choice if not set
             if 'api_choice' not in request.session:
@@ -390,7 +390,7 @@ def chatbot_response(request):
                     return StreamingHttpResponse(generate_streamed_response("Invalid choice. Please enter 'A' for Claude or 'B' for OpenAI: "), content_type='text/plain')
                 
                 request.session.modified = True
-                return StreamingHttpResponse(generate_streamed_response(f"API set to {request.session['api_choice']}. Type 'exit' to end the conversation or 'new' to start a new conversation. You can now ask your questions."), content_type='text/plain')
+                return StreamingHttpResponse(generate_streamed_response(f"Type 'exit' to end the conversation or 'new' to start a new conversation. Hi, what would you like help on today?"), content_type='text/plain')
 
             # Handle 'exit' command
             if user_input.lower() == 'exit':
