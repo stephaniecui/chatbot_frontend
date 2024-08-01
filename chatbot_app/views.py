@@ -16,7 +16,7 @@ import anthropic
 from openai import OpenAI
 
 # API clients
-client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+claude_client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 openai_client = OpenAI(api_key='sk-proj-ShiVg5Xf6KmYsbnLTmM5T3BlbkFJTZ4TsethWsCNSD7LdBuZ')
 
 SYSTEM_PROMPT = """You are the Imperial College London Chatbot, "Impy", designed to assist students and staff (the user) with various queries including but not limited to the Success Guide, timetables, and assignment due dates.
