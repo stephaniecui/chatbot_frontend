@@ -199,32 +199,19 @@ class MultiDB:
         original_prompt_words = set(prompt.lower().split())
         preprocessed_prompt = self.databases[next(iter(self.databases))].preprocess_text(prompt)
         all_results = []
-        
-        if debug:
-            print(f"\nDEBUG: Original prompt words: {original_prompt_words}")
-            print(f"DEBUG: Preprocessed prompt: {preprocessed_prompt}")
-        
+                
         for db_name, config in self.db_configs.items():
             if db_name not in self.databases:
                 continue
             
             matched_keywords = [keyword for keyword in config['keywords'] if keyword in original_prompt_words]
             weight = config['weight_addition'] if matched_keywords else 1.0
-            
-            if debug:
-                print(f"\nDEBUG: Database: {db_name}")
-                print(f"DEBUG: Matched keywords: {matched_keywords}")
-                print(f"DEBUG: Weight applied: {weight}")
-            
+                
             results = self.databases[db_name].search(preprocessed_prompt, k=k)
             
             weighted_results = [(db_name, result, score + weight) for result, score in results]
             all_results.extend(weighted_results)
             
-            if debug:
-                print(f"DEBUG: Top result score before weighting: {results[0][1] if results else 'N/A'}")
-                print(f"DEBUG: Top result score after weighting: {weighted_results[-1][2] if weighted_results else 'N/A'}")
-        
         # Sort results and remove duplicates based on content
         all_results.sort(key=lambda x: x[2], reverse=True)
         unique_results = []
@@ -235,13 +222,7 @@ class MultiDB:
                 seen_content.add(result.content)
             if len(unique_results) == k:
                 break
-        
-        if debug:
-            print("\nDEBUG: Final top unique results:")
-            for db_name, result, score in unique_results:
-                print(f"  - {db_name}: score = {score:.4f}")
-                print(f"    Content: {result.content[:100]}...")  # Print first 100 chars of content
-        
+                
         return unique_results
 
     def add_new_database(self, name, keywords, file_name, weight_addition=1.5):
