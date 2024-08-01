@@ -294,7 +294,7 @@ Summary:"""
     def get_context(self):
         return self.memory
 
-def get_api_response(prompt, multi_db, conversation_manager, format_hyperlinks=None, is_regenerate=False):
+def get_api_response(prompt, multi_db, conversation_manager, format_hyperlinks, is_regenerate=False):
     result = multi_db.analyze_and_search(prompt)
     
     formatted_info = "Relevant information from multiple databases:\n"
