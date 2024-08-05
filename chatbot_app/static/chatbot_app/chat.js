@@ -101,7 +101,6 @@ function scrollToBottom() {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// Automatically prompt the user for their level of study on page load
 window.onload = async function() {
     const botMessageElement = appendMessage('bot', '');
     try {
