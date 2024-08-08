@@ -143,7 +143,8 @@ def get_ai_response(prompt: str, conversation_manager, is_new_conversation: bool
     conversation_manager.update(prompt, response)
     
     response_with_links = format_hyperlinks(response)
-    return response_with_links
+    response_with_html = convert_markdown_to_html(response_with_links)
+    return response_with_html
 
 class ConversationManager:
     def __init__(self, memory: str = "", current_exchange: Dict[str, str] = None, max_memory_length: int = 1000):
@@ -212,6 +213,18 @@ def format_hyperlinks(text):
     url_pattern = re.compile(r'(https?://[^\s)]+)')
     formatted_text = url_pattern.sub(r'<a href="\g<0>" target="_blank">\g<0></a>', text)
     return formatted_text
+
+def convert_markdown_to_html(text):
+    # Replace markdown bullet points with HTML bullet points
+    text = re.sub(r'\n- ', r'<li>', text)
+    text = re.sub(r'\n\* ', r'<li>', text)
+    text = re.sub(r'\n\d+\. ', r'<li>', text)
+    text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
+    text = re.sub(r'\n', r'<br>', text)
+    
+    # Wrapping list items with <ul> tags
+    text = re.sub(r'(<li>.*?</li>)', r'<ul>\1</ul>', text, flags=re.DOTALL)
+    return text
 
 def index(request):
     request.session.flush()
