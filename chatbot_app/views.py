@@ -36,6 +36,10 @@ AZURE_SEARCH_KEY = os.environ.get("AZURE_SEARCH_KEY")
 AZURE_SEARCH_ENDPOINT = os.environ.get("AZURE_SEARCH_ENDPOINT")
 AZURE_SEARCH_INDEX_NAME = os.environ.get("AZURE_SEARCH_INDEX_NAME")
 
+# Ensure environment variables are set
+if not all([ANTHROPIC_API_KEY, OPENAI_API_KEY, AZURE_SEARCH_KEY, AZURE_SEARCH_ENDPOINT, AZURE_SEARCH_INDEX_NAME]):
+    raise ValueError("One or more required environment variables are missing")
+
 # Initialize API clients
 anthropic_client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 openai.api_key = OPENAI_API_KEY  # Ensure this is correctly set
@@ -140,9 +144,9 @@ def get_ai_response(prompt: str, conversation_manager, is_new_conversation: bool
     return response
 
 class ConversationManager:
-    def __init__(self, max_memory_length: int = 1000):
-        self.memory = ""
-        self.current_exchange = {"user": "", "assistant": ""}
+    def __init__(self, memory: str = "", current_exchange: Dict[str, str] = None, max_memory_length: int = 1000):
+        self.memory = memory
+        self.current_exchange = current_exchange if current_exchange else {"user": "", "assistant": ""}
         self.max_memory_length = max_memory_length
 
     def update(self, user_input: str, bot_response: str):
@@ -177,6 +181,21 @@ Summary:"""
 
     def get_context(self) -> str:
         return self.memory
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "memory": self.memory,
+            "current_exchange": self.current_exchange,
+            "max_memory_length": self.max_memory_length
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'ConversationManager':
+        return cls(
+            memory=data.get("memory", ""),
+            current_exchange=data.get("current_exchange", {"user": "", "assistant": ""}),
+            max_memory_length=data.get("max_memory_length", 1000)
+        )
 
 def generate_streamed_response(response):
     paragraphs = response.split('\n')
@@ -214,17 +233,19 @@ def chatbot_response(request):
             if not user_input:
                 return JsonResponse({'error': 'No message provided'}, status=400)
             
-            conversation_manager = request.session.get('conversation_manager', None)
-            if not conversation_manager:
+            conversation_manager_data = request.session.get('conversation_manager', None)
+            if conversation_manager_data:
+                conversation_manager = ConversationManager.from_dict(conversation_manager_data)
+            else:
                 conversation_manager = ConversationManager()
-                request.session['conversation_manager'] = conversation_manager
+                request.session['conversation_manager'] = conversation_manager.to_dict()
 
             is_regenerate = data.get('is_regenerate', False)
             response = get_ai_response(user_input, conversation_manager, is_new_conversation, is_regenerate)
             
             # Update session information
             request.session['is_new_conversation'] = False
-            request.session['conversation_manager'] = conversation_manager
+            request.session['conversation_manager'] = conversation_manager.to_dict()
 
             return StreamingHttpResponse(generate_streamed_response(response), content_type='text/plain')
 
