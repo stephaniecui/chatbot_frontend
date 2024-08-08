@@ -15,11 +15,7 @@ function getCookie(name) {
 
 function formatResponse(response) {
     let formattedResponse = response.replace(/\n/g, '<br>');
-    
-    formattedResponse = formattedResponse.replace(/<br><br>/g, '</p><p>');
-    
     formattedResponse = '<p>' + formattedResponse + '</p>';
-    
     return formattedResponse;
 }
         
@@ -57,6 +53,7 @@ async function sendMessage(isRegenerate = false, messageToRegenerate = null) {
                 const { done, value } = await reader.read();
                 if (done) break;
                 result += decoder.decode(value, { stream: true });
+                // Inject the formatted HTML response safely
                 botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(result);
                 scrollToBottom();
             }
@@ -77,7 +74,15 @@ function appendMessage(sender, message) {
     const chatBox = document.getElementById('chat-box');
     const messageElement = document.createElement('div');
     messageElement.classList.add('message', `${sender}-message`);
-    messageElement.innerHTML = `<div class="message-bubble">${message}</div>`;
+    
+    // Inject HTML directly if it's a bot response, otherwise escape user input.
+    if (sender === 'bot') {
+        messageElement.innerHTML = `<div class="message-bubble">${message}</div>`;
+    } else {
+        // For user messages, consider escaping the input to prevent any injection.
+        messageElement.textContent = message;
+    }
+    
     chatBox.appendChild(messageElement);
     scrollToBottom();
     return messageElement;
