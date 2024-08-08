@@ -14,7 +14,10 @@ function getCookie(name) {
 }
 
 function formatResponse(response) {
-    let formattedResponse = response.replace(/\n/g, '<br>');
+    // Convert markdown to HTML, ensuring URLs are clickable
+    let formattedResponse = response
+        .replace(/\n/g, '<br>')
+        .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
     
     formattedResponse = formattedResponse.replace(/<br><br>/g, '</p><p>');
     
