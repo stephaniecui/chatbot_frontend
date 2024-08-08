@@ -40,5 +40,5 @@ typing_extensions==4.12.2
 urllib3==2.2.2
 dj-database-url==2.1.0
 djangorestframework
-openai
+openai==0.28
 nltk
