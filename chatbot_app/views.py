@@ -223,25 +223,24 @@ def convert_markdown_to_html(text):
     text = re.sub(r'(?m)^## (.*?)$', r'<h2>\1</h2>', text)
     text = re.sub(r'(?m)^# (.*?)$', r'<h1>\1</h1>', text)
 
-    # Replace markdown unordered lists with HTML unordered lists
+    # Function to replace markdown lists with HTML lists
     def replace_unordered_lists(match):
         items = match.group(0).strip().split('\n')
-        list_items = ''.join([f'<li>{item[2:].strip()}</li>' for item in items])
-        return f'<ul>{list_items}</ul>'
+        list_items = ''.join(['<li>{}</li>'.format(item[2:].strip()) for item in items])
+        return '<ul>{}</ul>'.format(list_items)
 
-    # Replace markdown ordered lists with HTML ordered lists
     def replace_ordered_lists(match):
         items = match.group(0).strip().split('\n')
-        list_items = ''.join([f'<li>{re.sub(r"^\d+\.\s", "", item.strip())}</li>' for item in items])
-        return f'<ol>{list_items}</ol>'
+        list_items = ''.join(['<li>{}</li>'.format(re.sub(r"^\d+\.\s", "", item.strip())) for item in items])
+        return '<ol>{}</ol>'.format(list_items)
     
     # First, handle nested lists by indenting them
-    text = re.sub(r'((?:\n\s{2,}(?:-|\*)\s.+)+)', lambda m: replace_unordered_lists(m), text)
-    text = re.sub(r'((?:\n\s{2,}\d+\.\s.+)+)', lambda m: replace_ordered_lists(m), text)
+    text = re.sub(r'((?:\n\s{2,}(?:-|\*)\s.+)+)', replace_unordered_lists, text)
+    text = re.sub(r'((?:\n\s{2,}\d+\.\s.+)+)', replace_ordered_lists, text)
 
     # Then handle top-level lists
-    text = re.sub(r'((?:\n(?:-|\*)\s.+)+)', lambda m: replace_unordered_lists(m), text)
-    text = re.sub(r'((?:\n\d+\.\s.+)+)', lambda m: replace_ordered_lists(m), text)
+    text = re.sub(r'((?:\n(?:-|\*)\s.+)+)', replace_unordered_lists, text)
+    text = re.sub(r'((?:\n\d+\.\s.+)+)', replace_ordered_lists, text)
     
     return text
 
