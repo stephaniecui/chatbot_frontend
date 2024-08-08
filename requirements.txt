@@ -42,3 +42,4 @@ dj-database-url==2.1.0
 djangorestframework
 openai==0.28
 nltk
+markdown2
