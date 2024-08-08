@@ -150,7 +150,6 @@ def get_ai_response(prompt: str, conversation_manager, log_file_path: str, is_ne
         response = get_claude_response(full_prompt, CLAUDE_MAIN_MODEL)
     else:  # GPT
         response = get_gpt_response(full_prompt, GPT_MAIN_MODEL)
-    }
     
     conversation_manager.update(prompt, response)
     return response
