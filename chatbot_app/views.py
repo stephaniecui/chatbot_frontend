@@ -213,8 +213,9 @@ def generate_streamed_response(response):
         yield '\n\n'  # Add a new paragraph
 
 def format_hyperlinks(text):
-    url_pattern = re.compile(r'(https?://[^\s)]+)')
-    formatted_text = url_pattern.sub(r'<a href="\g<0>" target="_blank">\g<0></a>', text)
+    # Ensure only full URLs are used as hyperlinks
+    url_pattern = re.compile(r'\[(https?://[^\s)]+)\]\(\1\)')
+    formatted_text = url_pattern.sub(r'<a href="\1" target="_blank">\1</a>', text)
     return formatted_text
 
 def index(request):
