@@ -14,7 +14,7 @@ from .models import ChatMessage
 import re
 import requests
 import anthropic
-from openai import OpenAI
+import openai
 import nltk  
 from nltk.corpus import stopwords
 
