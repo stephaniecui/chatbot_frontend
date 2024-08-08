@@ -17,6 +17,7 @@ import anthropic
 import openai  # Ensure OpenAI is imported
 import nltk
 from nltk.corpus import stopwords
+import markdown2
 
 # Select your API, "claude" or "gpt"
 active_api = "gpt"
@@ -142,8 +143,11 @@ def get_ai_response(prompt: str, conversation_manager, is_new_conversation: bool
     
     conversation_manager.update(prompt, response)
     
+     # Format hyperlinks
     response_with_links = format_hyperlinks(response)
-    return response_with_links
+    # Convert markdown to HTML
+    response_with_html = markdown2.markdown(response_with_links)
+    return response_with_html
 
 class ConversationManager:
     def __init__(self, memory: str = "", current_exchange: Dict[str, str] = None, max_memory_length: int = 1000):
