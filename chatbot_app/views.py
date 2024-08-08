@@ -143,8 +143,7 @@ def get_ai_response(prompt: str, conversation_manager, is_new_conversation: bool
     conversation_manager.update(prompt, response)
     
     response_with_links = format_hyperlinks(response)
-    response_with_html = convert_markdown_to_html(response_with_links)
-    return response_with_html
+    return response_with_links
 
 class ConversationManager:
     def __init__(self, memory: str = "", current_exchange: Dict[str, str] = None, max_memory_length: int = 1000):
@@ -213,37 +212,6 @@ def format_hyperlinks(text):
     url_pattern = re.compile(r'(https?://[^\s)]+)')
     formatted_text = url_pattern.sub(r'<a href="\g<0>" target="_blank">\g<0></a>', text)
     return formatted_text
-
-def convert_markdown_to_html(text):
-    # Replace markdown bold with HTML bold
-    text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
-    
-    # Replace markdown headers with HTML headers
-    text = re.sub(r'(?m)^### (.*?)$', r'<h3>\1</h3>', text)
-    text = re.sub(r'(?m)^## (.*?)$', r'<h2>\1</h2>', text)
-    text = re.sub(r'(?m)^# (.*?)$', r'<h1>\1</h1>', text)
-
-    # Function to replace markdown unordered lists with HTML unordered lists
-    def replace_unordered_lists(match):
-        items = match.group(0).strip().split('\n')
-        list_items = ''.join(['<li>{}</li>'.format(item[2:].strip()) for item in items])
-        return '<ul>{}</ul>'.format(list_items)
-
-    # Function to replace markdown ordered lists with HTML ordered lists
-    def replace_ordered_lists(match):
-        items = match.group(0).strip().split('\n')
-        list_items = ''.join(['<li>{}</li>'.format(re.sub(r'^\d+\.\s', '', item.strip())) for item in items])
-        return '<ol>{}</ol>'.format(list_items)
-    
-    # Handle nested lists
-    text = re.sub(r'((?:\n\s{2,}(?:-|\*)\s.+)+)', lambda m: replace_unordered_lists(m), text)
-    text = re.sub(r'((?:\n\s{2,}\d+\.\s.+)+)', lambda m: replace_ordered_lists(m), text)
-
-    # Handle top-level lists
-    text = re.sub(r'((?:\n(?:-|\*)\s.+)+)', lambda m: replace_unordered_lists(m), text)
-    text = re.sub(r'((?:\n\d+\.\s.+)+)', lambda m: replace_ordered_lists(m), text)
-    
-    return text
 
 def index(request):
     request.session.flush()
