@@ -215,15 +215,23 @@ def format_hyperlinks(text):
     return formatted_text
 
 def convert_markdown_to_html(text):
-    # Replace markdown bullet points with HTML bullet points
-    text = re.sub(r'\n- ', r'<li>', text)
-    text = re.sub(r'\n\* ', r'<li>', text)
-    text = re.sub(r'\n\d+\. ', r'<li>', text)
+    # Replace markdown bold with HTML bold
     text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
-    text = re.sub(r'\n', r'<br>', text)
     
-    # Wrapping list items with <ul> tags
+    # Replace markdown headers with HTML headers
+    text = re.sub(r'(?m)^### (.*?)$', r'<h3>\1</h3>', text)
+    text = re.sub(r'(?m)^## (.*?)$', r'<h2>\1</h2>', text)
+    text = re.sub(r'(?m)^# (.*?)$', r'<h1>\1</h1>', text)
+
+    # Replace markdown ordered lists with HTML ordered lists
+    text = re.sub(r'(?m)^\d+\.\s+(.*?)(?=\n|$)', r'<li>\1</li>', text)
+    text = re.sub(r'(<li>.*?</li>)', r'<ol>\1</ol>', text, flags=re.DOTALL)
+
+    # Replace markdown unordered lists with HTML unordered lists
+    text = re.sub(r'(?m)^-\s+(.*?)(?=\n|$)', r'<li>\1</li>', text)
+    text = re.sub(r'(?m)^\*\s+(.*?)(?=\n|$)', r'<li>\1</li>', text)
     text = re.sub(r'(<li>.*?</li>)', r'<ul>\1</ul>', text, flags=re.DOTALL)
+
     return text
 
 def index(request):
