@@ -141,7 +141,9 @@ def get_ai_response(prompt: str, conversation_manager, is_new_conversation: bool
         response = get_gpt_response(full_prompt, GPT_MAIN_MODEL)
     
     conversation_manager.update(prompt, response)
-    return response
+    
+    response_with_links = format_hyperlinks(response)
+    return response_with_links
 
 class ConversationManager:
     def __init__(self, memory: str = "", current_exchange: Dict[str, str] = None, max_memory_length: int = 1000):
