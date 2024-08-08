@@ -14,16 +14,16 @@ from .models import ChatMessage
 import re
 import requests
 import anthropic
-import openai
-import nltk  
+import openai  # Ensure OpenAI is imported
+import nltk
 from nltk.corpus import stopwords
 
-# Select your api, "claude" or "gpt"
+# Select your API, "claude" or "gpt"
 active_api = "gpt"
 
 # API Configuration
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY") # Currently using from OpenAI directly rather than Azure's one due to token constraints
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 # Model Configuration
 CLAUDE_MAIN_MODEL = "claude-3-5-sonnet-20240620"
@@ -38,7 +38,7 @@ AZURE_SEARCH_INDEX_NAME = os.environ.get("AZURE_SEARCH_INDEX_NAME")
 
 # Initialize API clients
 anthropic_client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-openai.api_key = OPENAI_API_KEY
+openai.api_key = OPENAI_API_KEY  # Ensure this is correctly set
 
 SYSTEM_PROMPT = """Hello there! I'm Impy, the friendly Imperial College London Success Guide chatbot. My purpose is to be a helpful and approachable guide for students on the range of topics covered in the Imperial College London Success Guide. I speak in British English, no z's!
 
@@ -54,20 +54,12 @@ Now, if you seem a bit stressed or worried about something, I'll be sure to emph
 
 So, how can I assist you today? I'm excited to put my capabilities to work and help make your Imperial experience as smooth and successful as possible. Fire away with your question or request, and let's get started!"""
 
-### AZURE ###
-
-# The Azure techstack accounts for storing the database and searching up relevant information.
-# This replaces the DataEntry, VectorDB and MultiDB classes from previous versions of Impy.
-# It analyses the "query" from the user which is semantically processed
-# After that, a vector search is performed to the Azure database which has all the JSON files collated in it
-# The top results are what get sent back to the LLM API (currently returns k=2 results)
-
+# The Azure tech stack accounts for storing the database and searching up relevant information.
 def azure_search(query: str, k: int = 2) -> List[Dict[str, Any]]:
-    # This is the URL that goes to my personal Azure account
     url = f"{AZURE_SEARCH_ENDPOINT}/indexes/{AZURE_SEARCH_INDEX_NAME}/docs/search?api-version=2023-07-01-Preview"
     headers = {
         "Content-Type": "application/json",
-        "api-key": AZURE_SEARCH_KEY 
+        "api-key": AZURE_SEARCH_KEY
     }
     body = {
         "search": query,
@@ -75,7 +67,7 @@ def azure_search(query: str, k: int = 2) -> List[Dict[str, Any]]:
         "semanticConfiguration": "vector-1722855681222-semantic-configuration",
         "top": k,
         "queryLanguage": "en-gb",
-        "select": "title, chunk" # Takes the title of the JSON file as well as the most relevant chunk
+        "select": "title, chunk"
     }
     response = requests.post(url, headers=headers, json=body)
     if response.status_code == 200:
@@ -84,18 +76,15 @@ def azure_search(query: str, k: int = 2) -> List[Dict[str, Any]]:
         print(f"Search API error: {response.status_code}, {response.text}")
         return []
 
-# This formats the title of the JSON file and the top scoring chunk
 def process_results(results: List[Dict[str, Any]]) -> List[Dict[str, str]]:
     return [{"title": result.get('title', 'N/A'), "chunk": result.get('chunk', 'N/A')} for result in results]
 
-# This formats it for the multiple k results
 def format_for_impy(query: str, processed_results: List[Dict[str, str]]) -> str:
     formatted_info = f"Query: {query}\n\n"
     for result in processed_results:
         formatted_info += f"Title: {result['title']}\nChunk: {result['chunk']}\n\n"
     return formatted_info
 
-# Function to call the Claude API
 def get_claude_response(prompt: str, model: str, max_tokens: int = 1000) -> str:
     try:
         message = anthropic_client.messages.create(
@@ -110,10 +99,9 @@ def get_claude_response(prompt: str, model: str, max_tokens: int = 1000) -> str:
     except Exception as e:
         return f"An error occurred with the Claude API: {str(e)}"
 
-# Function to call the GPT API
 def get_gpt_response(prompt: str, model: str, max_tokens: int = 1000) -> str:
     try:
-        response = openai.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model=model,
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
@@ -125,9 +113,7 @@ def get_gpt_response(prompt: str, model: str, max_tokens: int = 1000) -> str:
     except Exception as e:
         return f"An error occurred with the GPT API: {str(e)}"
 
-# General function that uses either Claude or GPT from the functions defined previously
-# If we were to use a different API, we can easily add it as another conditional
-def get_ai_response(prompt: str, conversation_manager, log_file_path: str, is_new_conversation: bool = False, is_regenerate: bool = False) -> str:
+def get_ai_response(prompt: str, conversation_manager, is_new_conversation: bool = False, is_regenerate: bool = False) -> str:
     search_results = azure_search(prompt)
     processed_results = process_results(search_results)
     formatted_info = format_for_impy(prompt, processed_results)
@@ -143,9 +129,8 @@ def get_ai_response(prompt: str, conversation_manager, log_file_path: str, is_ne
         from the previous one while still accurately addressing the user's question.
         """ if is_regenerate else ""
     
-    full_prompt = f"{formatted_info}\n\nConversation context:\n{context}\n\nUser's new question: {prompt}"
+    full_prompt = f"{formatted_info}\n\nConversation context:\n{context}\n\nUser's new question: {prompt}\n\n{regenerate_instruction}"
     
-     # Which API is called
     if active_api == 'claude':
         response = get_claude_response(full_prompt, CLAUDE_MAIN_MODEL)
     else:  # GPT
@@ -154,10 +139,6 @@ def get_ai_response(prompt: str, conversation_manager, log_file_path: str, is_ne
     conversation_manager.update(prompt, response)
     return response
 
-# CONVERSATION MANAGER #
-
-# This class helps give Impy a memory, by summarising past interactions using a secondary call of the API
-# It uses the cheaper version of the API (Haiku for Claude, 4o-mini for GPT)
 class ConversationManager:
     def __init__(self, max_memory_length: int = 1000):
         self.memory = ""
@@ -196,7 +177,7 @@ Summary:"""
 
     def get_context(self) -> str:
         return self.memory
-        
+
 def generate_streamed_response(response):
     paragraphs = response.split('\n')
     for paragraph in paragraphs:
@@ -212,7 +193,6 @@ def format_hyperlinks(text):
     return formatted_text
 
 def index(request):
-    # Clear the session data each time the page is loaded
     request.session.flush()
     return render(request, 'chatbot_app/index.html')
 
@@ -222,23 +202,34 @@ def chatbot_response(request):
         try:
             data = json.loads(request.body)
             user_input = data.get('message')
+            is_new_conversation = request.session.get('is_new_conversation', False)
+
+            # Initialize session if it's the first request
+            if 'initialized' not in request.session:
+                request.session['initialized'] = True
+                request.session['is_new_conversation'] = True
+                greeting = "Hello there! I'm Impy, your friendly Imperial College London Success Guide chatbot. How can I assist you today?"
+                return StreamingHttpResponse(generate_streamed_response(greeting), content_type='text/plain')
+
             if not user_input:
                 return JsonResponse({'error': 'No message provided'}, status=400)
             
-            log_file_path = "path/to/your/logfile"  # Adjust the path as necessary
             conversation_manager = request.session.get('conversation_manager', None)
             if not conversation_manager:
                 conversation_manager = ConversationManager()
                 request.session['conversation_manager'] = conversation_manager
 
-            is_new_conversation = data.get('is_new_conversation', False)
             is_regenerate = data.get('is_regenerate', False)
-
-            response = get_ai_response(user_input, conversation_manager, log_file_path, is_new_conversation, is_regenerate)
+            response = get_ai_response(user_input, conversation_manager, is_new_conversation, is_regenerate)
             
+            # Update session information
+            request.session['is_new_conversation'] = False
+            request.session['conversation_manager'] = conversation_manager
+
             return StreamingHttpResponse(generate_streamed_response(response), content_type='text/plain')
 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
+
