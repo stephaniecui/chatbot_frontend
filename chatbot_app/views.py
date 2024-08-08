@@ -147,7 +147,7 @@ def get_ai_response(prompt: str, conversation_manager, is_new_conversation: bool
      # Format hyperlinks
     response_with_links = format_hyperlinks(response)
     # Convert markdown to HTML
-    response_with_html = markdown2.markdown(response_with_links, extras=["nofollow", "safe"])
+    response_with_html = markdown2.markdown(response_with_links)
     return response_with_html
 
 class ConversationManager:
@@ -214,12 +214,8 @@ def generate_streamed_response(response):
         yield '\n\n'  # Add a new paragraph
 
 def format_hyperlinks(text):
-    # Escape any HTML in the text to prevent XSS
-    text = html.escape(text)
-    # Convert URLs into clickable links
     url_pattern = re.compile(r'(https?://[^\s)]+)')
     formatted_text = url_pattern.sub(r'<a href="\g<0>" target="_blank">\g<0></a>', text)
-    
     return formatted_text
 
 def index(request):
