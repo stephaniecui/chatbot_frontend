@@ -19,6 +19,8 @@ import nltk
 from nltk.corpus import stopwords
 import markdown2
 import html
+from django.views.decorators.csrf import csrf_protect
+from django.utils.safestring import mark_safe
 
 # Select your API, "claude" or "gpt"
 active_api = "gpt"
@@ -148,7 +150,7 @@ def get_ai_response(prompt: str, conversation_manager, is_new_conversation: bool
     response_with_links = format_hyperlinks(response)
     # Convert markdown to HTML
     response_with_html = markdown2.markdown(response_with_links)
-    return response_with_html
+    return mark_safe(response_with_html)
 
 class ConversationManager:
     def __init__(self, memory: str = "", current_exchange: Dict[str, str] = None, max_memory_length: int = 1000):
@@ -222,7 +224,7 @@ def index(request):
     request.session.flush()
     return render(request, 'chatbot_app/index.html')
 
-@csrf_exempt
+@csrf_protect
 def chatbot_response(request):
     if request.method == 'POST':
         try:
@@ -254,7 +256,7 @@ def chatbot_response(request):
             request.session['is_new_conversation'] = False
             request.session['conversation_manager'] = conversation_manager.to_dict()
 
-            return StreamingHttpResponse(generate_streamed_response(response), content_type='text/plain')
+            return StreamingHttpResponse(generate_streamed_response(response), content_type='text/html')
 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
