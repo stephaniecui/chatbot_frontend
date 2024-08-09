@@ -216,8 +216,8 @@ def generate_streamed_response(response):
         yield '\n\n'  # Add a new paragraph
 
 def format_hyperlinks(text):
-    url_pattern = re.compile(r'(https?://[^\s)]+)')
-    formatted_text = url_pattern.sub(r'<a href="\g<0>" target="_blank">\g<0></a>', text)
+    url_pattern = re.compile(r'(https?://[^\s]+)')
+    formatted_text = url_pattern.sub(lambda m: f'<a href="{m.group(1)}" target="_blank">{m.group(1)}</a>', text)
     return formatted_text
 
 def index(request):
@@ -251,7 +251,7 @@ def chatbot_response(request):
 
             is_regenerate = data.get('is_regenerate', False)
             response = get_ai_response(user_input, conversation_manager, is_new_conversation, is_regenerate)
-            
+        
             # Update session information
             request.session['is_new_conversation'] = False
             request.session['conversation_manager'] = conversation_manager.to_dict()
