@@ -142,11 +142,3 @@ document.getElementById('user-input').addEventListener('keypress', function (e) 
         e.preventDefault(); // Prevent newline in the textarea
     }
 });
-
-// New event listener for opening links in new tabs
-document.getElementById('chat-box').addEventListener('click', function(e) {
-    if (e.target.tagName === 'A') {
-        e.preventDefault();
-        window.open(e.target.href, '_blank');
-    }
-});
