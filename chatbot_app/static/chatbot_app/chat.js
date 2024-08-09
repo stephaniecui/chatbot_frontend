@@ -13,14 +13,8 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function formatResponse(response) {
-    let formattedResponse = response.replace(/\n/g, '<br>');
-    
-    formattedResponse = formattedResponse.replace(/<br><br>/g, '</p><p>');
-    
-    formattedResponse = '<p>' + formattedResponse + '</p>';
-    
-    return formattedResponse;
+function formatResponse(response) { 
+    return response;
 }
         
 async function sendMessage(isRegenerate = false, messageToRegenerate = null) {
@@ -57,7 +51,7 @@ async function sendMessage(isRegenerate = false, messageToRegenerate = null) {
                 const { done, value } = await reader.read();
                 if (done) break;
                 result += decoder.decode(value, { stream: true });
-                botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(result);
+                botMessageElement.querySelector('.message-bubble').innerHTML = result;
                 scrollToBottom();
             }
         }
@@ -77,7 +71,13 @@ function appendMessage(sender, message) {
     const chatBox = document.getElementById('chat-box');
     const messageElement = document.createElement('div');
     messageElement.classList.add('message', `${sender}-message`);
-    messageElement.innerHTML = `<div class="message-bubble">${message}</div>`;
+    const messageBubble = document.createElement('div');
+    if (sender === 'user') {
+        messageBubble.textContent = message; // Use textContent for user messages
+    } else {
+        messageBubble.innerHTML = message; // Use innerHTML for bot messages
+    }
+    messageElement.appendChild(messageBubble);
     chatBox.appendChild(messageElement);
     scrollToBottom();
     return messageElement;
@@ -121,7 +121,7 @@ window.onload = async function() {
                 const { done, value } = await reader.read();
                 if (done) break;
                 result += decoder.decode(value, { stream: true });
-                botMessageElement.querySelector('.message-bubble').innerHTML = formatResponse(result);
+                botMessageElement.querySelector('.message-bubble').innerHTML = result;
                 scrollToBottom();
             }
         }
