@@ -51,7 +51,8 @@ async function sendMessage(isRegenerate = false, messageToRegenerate = null) {
                 const { done, value } = await reader.read();
                 if (done) break;
                 result += decoder.decode(value, { stream: true });
-                botMessageElement.querySelector('.message-bubble').innerHTML = result;
+                console.log("Raw response:", result);
+                botMessageElement.querySelector('.message-bubble').innerHTML = sanitizeHTML(result);
                 scrollToBottom();
             }
         }
@@ -65,6 +66,12 @@ async function sendMessage(isRegenerate = false, messageToRegenerate = null) {
         botMessageElement.querySelector('.message-bubble').innerHTML = 'Sorry, an error occurred while processing your request.';
     }
     scrollToBottom();
+}
+
+function sanitizeHTML(html) {
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+    return temp.innerHTML;
 }
 
 function appendMessage(sender, message) {
@@ -140,5 +147,12 @@ document.getElementById('user-input').addEventListener('keypress', function (e) 
     if (e.key === 'Enter' && !e.shiftKey) {
         sendMessage();
         e.preventDefault(); // Prevent newline in the textarea
+    }
+});
+
+document.getElementById('chat-box').addEventListener('click', function(e) {
+    if (e.target.tagName === 'A') {
+        e.preventDefault();
+        window.open(e.target.href, '_blank');
     }
 });
