@@ -105,31 +105,36 @@ body {
     max-width: 70%;
     margin-bottom: 15px;
     clear: both;
+    display: flex;
+    align-items: flex-start;
 }
-
 .user-message {
     align-self: flex-end;
+    flex-direction: row-reverse;
 }
 
 .bot-message {
     align-self: flex-start;
-    display: flex;
-    align-items: flex-start;
 }
-
-.bot-icon {
+.bot-icon, .user-icon {
     width: 40px;
     height: 40px;
-    margin-right: 10px;
-    background-image: url('icon.png');
     background-size: cover;
     flex-shrink: 0;
+}
+.bot-icon {
+    margin-right: 10px;
+    background-image: url('icon.png');
+}
+.user-icon {
+    margin-left: 10px;
+    background-image: url('students.png');
 }
 
 .message-bubble {
     padding: 10px 15px;
     border-radius: 20px;
-    display: inline-block;
+    max-width: calc(100% - 50px);  /* Adjust based on icon size */
 }
 
 .user-message .message-bubble {
