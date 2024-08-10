@@ -121,7 +121,7 @@ body {
     width: 30px;
     height: 30px;
     margin-right: 10px;
-    background-image: url('../icon.png');
+    background-image: url('icon.png');
     background-size: cover;
     flex-shrink: 0;
 }
