@@ -78,16 +78,20 @@ function appendMessage(sender, message) {
     const messageElement = document.createElement('div');
     messageElement.classList.add('message', `${sender}-message`);
     
-    if (sender === 'bot') {
-        const iconElement = document.createElement('div');
-        iconElement.classList.add('bot-icon');
-        messageElement.appendChild(iconElement);
-    }
+    const iconElement = document.createElement('div');
+    iconElement.classList.add(`${sender}-icon`);
     
     const bubbleElement = document.createElement('div');
     bubbleElement.classList.add('message-bubble');
     bubbleElement.innerHTML = message;
-    messageElement.appendChild(bubbleElement);
+    
+    if (sender === 'bot') {
+        messageElement.appendChild(iconElement);
+        messageElement.appendChild(bubbleElement);
+    } else {
+        messageElement.appendChild(bubbleElement);
+        messageElement.appendChild(iconElement);
+    }
     
     chatBox.appendChild(messageElement);
     scrollToBottom();
