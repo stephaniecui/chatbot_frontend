@@ -85,13 +85,9 @@ function appendMessage(sender, message) {
     bubbleElement.classList.add('message-bubble');
     bubbleElement.innerHTML = message;
     
-    if (sender === 'bot') {
-        messageElement.appendChild(iconElement);
-        messageElement.appendChild(bubbleElement);
-    } else {
-        messageElement.appendChild(bubbleElement);
-        messageElement.appendChild(iconElement);
-    }
+    // Always add the bubble first, then the icon
+    messageElement.appendChild(bubbleElement);
+    messageElement.appendChild(iconElement);
     
     chatBox.appendChild(messageElement);
     scrollToBottom();
