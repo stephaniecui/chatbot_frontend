@@ -77,7 +77,18 @@ function appendMessage(sender, message) {
     const chatBox = document.getElementById('chat-box');
     const messageElement = document.createElement('div');
     messageElement.classList.add('message', `${sender}-message`);
-    messageElement.innerHTML = `<div class="message-bubble">${message}</div>`;
+    
+    if (sender === 'bot') {
+        const iconElement = document.createElement('div');
+        iconElement.classList.add('bot-icon');
+        messageElement.appendChild(iconElement);
+    }
+    
+    const bubbleElement = document.createElement('div');
+    bubbleElement.classList.add('message-bubble');
+    bubbleElement.innerHTML = message;
+    messageElement.appendChild(bubbleElement);
+    
     chatBox.appendChild(messageElement);
     scrollToBottom();
     return messageElement;
