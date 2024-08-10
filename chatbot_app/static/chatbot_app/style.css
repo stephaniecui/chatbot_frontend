@@ -113,6 +113,17 @@ body {
 
 .bot-message {
     align-self: flex-start;
+    display: flex;
+    align-items: flex-start;
+}
+
+.bot-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    background-image: url('path/to/your/icon.png');
+    background-size: cover;
+    flex-shrink: 0;
 }
 
 .message-bubble {
