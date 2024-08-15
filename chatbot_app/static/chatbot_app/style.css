@@ -146,7 +146,7 @@ body {
 }
 .user-icon {
     margin-left: 12px;
-    background-image: url('users.png');
+    background-image: url('user_icon.png');
 }
 
 .message-bubble {
