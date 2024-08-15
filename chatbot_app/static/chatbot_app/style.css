@@ -123,7 +123,7 @@ body {
     flex-shrink: 0;
 }
 .bot-icon {
-    margin-right: 12px;
+    margin-right: 14px;
     background-image: url('impy.png');
 }
 .user-icon {
